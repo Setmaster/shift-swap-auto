@@ -10,6 +10,9 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<AuctionDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Configures AutoMapper to use the mapping profiles defined in the RequestHelpers namespace
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 var app = builder.Build();
 
 // // Configure the HTTP request pipeline.
