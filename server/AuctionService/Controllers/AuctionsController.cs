@@ -2,6 +2,7 @@
 using AuctionService.DTOs;
 using AuctionService.Entities;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,17 +23,21 @@ public class AuctionsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<AuctionDto>>> GetAllAuctions()
+    public async Task<ActionResult<List<AuctionDto>>> GetAllAuctions(string date)
     {
-        // Fetching all auctions from the database, including related items, and ordering by item make
-        var auctions = await _context.Auctions
-            .Include(x =>
-                x.Item) // This tells EF Core to include the related Item entity when querying the Auctions table, eager loading. Without this, the Item properties would not be loaded automatically (lazy loading) and would require a separate query to access 
-            .OrderBy(x => x.Item.Make)
-            .ToListAsync();
+        // Create an IQueryable collection of Auctions, ordered by the 'Make' of the item
+        var query = _context.Auctions.OrderBy(x => x.Item.Make).AsQueryable();
 
-        // Mapping the list of auctions to a list of AuctionDto objects and returning it
-        return _mapper.Map<List<AuctionDto>>(auctions);
+        // Check if the 'date' string is not null or empty
+        if (!string.IsNullOrEmpty(date))
+        {
+            // Parse the 'date' string into a DateTime object, convert it to UTC, and filter the query
+            // to include only those auctions that were updated after the specified date
+            query = query.Where(x => x.UpdatedAt.CompareTo(DateTime.Parse(date).ToUniversalTime()) > 0);
+        }
+
+        // Projecting the query to an AuctionDto object and returning it as a list
+        return await query.ProjectTo<AuctionDto>(_mapper.ConfigurationProvider).ToListAsync();
     }
 
     [HttpGet("{id}")]
