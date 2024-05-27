@@ -17,6 +17,7 @@ namespace SearchService.Controllers
             var (searchTerm, pageNumber, pageSize, seller, winner, orderBy, filterBy) = searchParams;
             
             // Create a paged search query for the 'Item' collection
+            // Using <Item, Item> to comply with the library's design, allowing different types for the entity and result
             var query = DB.PagedSearch<Item, Item>();
 
             // If a search term is provided, add a full text search filter and sort by text score
