@@ -1,12 +1,9 @@
 using System.Net;
 using MassTransit;
-using MongoDB.Driver;
-using MongoDB.Entities;
 using Polly;
 using Polly.Extensions.Http;
 using SearchService.Consumers;
 using SearchService.Data;
-using SearchService.Models;
 using SearchService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,12 +20,16 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // Configures MassTransit to use RabbitMQ as the message broker
 builder.Services.AddMassTransit(x =>
 {
+    // Adds all consumers (message handlers) from the namespace containing AuctionCreatedConsumer
     x.AddConsumersFromNamespaceContaining<AuctionCreatedConsumer>();
     
+    // Sets the naming convention for the endpoints to use kebab-case format with the prefix "search" eg. search-auction-created
     x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("search", false));
     
+    // Configures MassTransit to use RabbitMQ as the transport protocol
     x.UsingRabbitMq((context, cfg) =>
     {
+        // Automatically configures all endpoints defined by the consumers in the context
         cfg.ConfigureEndpoints(context);
     });
 });

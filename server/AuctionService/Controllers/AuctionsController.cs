@@ -3,6 +3,8 @@ using AuctionService.DTOs;
 using AuctionService.Entities;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Contracts;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,12 +16,14 @@ public class AuctionsController : ControllerBase
 {
     private readonly AuctionDbContext _context; // Variable for database context
     private readonly IMapper _mapper; // Variable for AutoMapper
+    private readonly IPublishEndpoint _publishEndpoint;
 
     // Constructor to initialize the database context and AutoMapper
-    public AuctionsController(AuctionDbContext context, IMapper mapper)
+    public AuctionsController(AuctionDbContext context, IMapper mapper, IPublishEndpoint publishEndpoint)
     {
         _context = context;
         _mapper = mapper;
+        _publishEndpoint = publishEndpoint;
     }
 
     [HttpGet]
@@ -72,13 +76,19 @@ public class AuctionsController : ControllerBase
 
         var result = await _context.SaveChangesAsync() > 0;
 
+        // Mapping the newly created auction to an AuctionDto
+        var newAuction = _mapper.Map<AuctionDto>(auction);
+
+        // Publishing an event that a new auction was created
+        await _publishEndpoint.Publish(_mapper.Map<AuctionCreated>(newAuction));
+
         if (!result)
         {
             return BadRequest("Could not save changes to the DB");
         }
 
-        // Mapping the auction to an AuctionDto object and returning it 
-        return CreatedAtAction(nameof(GetAuctionById), new { auction.Id }, _mapper.Map<AuctionDto>(auction));
+        // Returning a 201 Created response with the newly created auction and provides the URL where the newly created resource can be accessed
+        return CreatedAtAction(nameof(GetAuctionById), new { auction.Id }, newAuction);
     }
 
     [HttpPut("{id}")]

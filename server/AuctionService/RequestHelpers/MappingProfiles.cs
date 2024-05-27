@@ -1,6 +1,7 @@
 ﻿using AuctionService.DTOs;
 using AuctionService.Entities;
 using AutoMapper;
+using Contracts;
 
 namespace AuctionService.RequestHelpers;
 
@@ -23,6 +24,9 @@ public class MappingProfiles : Profile
         // Configures a mapping from CreateAuctionDto to Item entity
         // This explicitly defines the mapping from CreateAuctionDto to Item, which is necessary to support the nested mapping
         CreateMap<CreateAuctionDto, Item>();
+
+        // Configures a mapping from AuctionDto to AuctionCreated
+        CreateMap<AuctionDto, AuctionCreated>();
     }
     
     
