@@ -101,8 +101,32 @@ public class AuctionsController : ControllerBase
 
         var result = await _context.SaveChangesAsync() > 0;
 
-        if (result) return Ok();
+        if (result) BadRequest("Could not save changes to the DB");
 
-        return BadRequest("Could not save changes to the DB");
+        return Ok();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteAuction(Guid id)
+    {
+        // Fetching the auction by its ID
+        var auction = await _context.Auctions.FindAsync(id);
+
+        // If no auction is found, return a 404 Not Found response
+        if (auction == null)
+        {
+            return NotFound();
+        }
+
+        // TODO: check seller is current user
+
+        // Removing the auction from the database
+        _context.Auctions.Remove(auction);
+
+        var result = await _context.SaveChangesAsync() > 0;
+
+        if (!result) return BadRequest("Could not save changes to the DB");
+
+        return Ok();
     }
 }
