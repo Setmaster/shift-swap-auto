@@ -22,7 +22,7 @@ namespace AuctionService.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("AuctionService.Entities.Auction", b =>
+            modelBuilder.Entity("AuctionService.Models.Auction", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -60,7 +60,7 @@ namespace AuctionService.Data.Migrations
                     b.ToTable("Auctions");
                 });
 
-            modelBuilder.Entity("AuctionService.Entities.Item", b =>
+            modelBuilder.Entity("AuctionService.Models.Item", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -95,18 +95,18 @@ namespace AuctionService.Data.Migrations
                     b.ToTable("Items");
                 });
 
-            modelBuilder.Entity("AuctionService.Entities.Item", b =>
+            modelBuilder.Entity("AuctionService.Models.Item", b =>
                 {
-                    b.HasOne("AuctionService.Entities.Auction", "Auction")
+                    b.HasOne("AuctionService.Models.Auction", "Auction")
                         .WithOne("Item")
-                        .HasForeignKey("AuctionService.Entities.Item", "AuctionId")
+                        .HasForeignKey("AuctionService.Models.Item", "AuctionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Auction");
                 });
 
-            modelBuilder.Entity("AuctionService.Entities.Auction", b =>
+            modelBuilder.Entity("AuctionService.Models.Auction", b =>
                 {
                     b.Navigation("Item");
                 });
