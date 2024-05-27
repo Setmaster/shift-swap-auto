@@ -4,6 +4,7 @@ using MongoDB.Driver;
 using MongoDB.Entities;
 using Polly;
 using Polly.Extensions.Http;
+using SearchService.Consumers;
 using SearchService.Data;
 using SearchService.Models;
 using SearchService.Services;
@@ -16,9 +17,16 @@ builder.Services.AddControllers();
 // Configures the AuctionServiceHttpClient to use a retry policy
 builder.Services.AddHttpClient<AuctionServiceHttpClient>().AddPolicyHandler(GetPolicy());
 
+// Configures AutoMapper to use the mapping profiles defined in the RequestHelpers namespace
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 // Configures MassTransit to use RabbitMQ as the message broker
 builder.Services.AddMassTransit(x =>
 {
+    x.AddConsumersFromNamespaceContaining<AuctionCreatedConsumer>();
+    
+    x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("search", false));
+    
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.ConfigureEndpoints(context);
