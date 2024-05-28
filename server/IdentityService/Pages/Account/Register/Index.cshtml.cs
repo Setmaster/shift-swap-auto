@@ -47,7 +47,7 @@ public class Index : PageModel
         // Create a new application user with the input email and confirm the email
         var user = new ApplicationUser
         {
-            UserName = Input.Email,
+            UserName = Input.Username,
             Email = Input.Email,
             EmailConfirmed = true,
         };
