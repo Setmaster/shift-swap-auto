@@ -17,11 +17,22 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // Configures MassTransit to use RabbitMQ as the message broker
 builder.Services.AddMassTransit(x =>
 {
+    // Configuring the outbox pattern with Entity Framework for the AuctionDbContext
+    x.AddEntityFrameworkOutbox<AuctionDbContext>(cfg =>
+    {
+        cfg.QueryDelay = TimeSpan.FromSeconds(10);
+
+        cfg.UsePostgres(); // Specifying the use of PostgreSQL for the outbox.
+        cfg.UseBusOutbox(); // Enabling the bus outbox integration.
+    });
+    
+    // Configuring MassTransit to use RabbitMQ as the transport
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.ConfigureEndpoints(context);
     });
 });
+
 
 var app = builder.Build();
 
