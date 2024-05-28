@@ -425,3 +425,5 @@ FodyWeavers.xsd
 # Coverlet is a free, cross platform Code Coverage Tool
 coverage*[.json, .xml, .info]
 
+
+/server/IdentityService/keys/*
