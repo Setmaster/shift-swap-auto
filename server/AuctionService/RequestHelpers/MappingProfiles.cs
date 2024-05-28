@@ -27,6 +27,12 @@ public class MappingProfiles : Profile
 
         // Configures a mapping from AuctionDto to AuctionCreated
         CreateMap<AuctionDto, AuctionCreated>();
+        
+        // Configures a mapping from Auction to AuctionUpdated
+        CreateMap<Auction, AuctionUpdated>().IncludeMembers(x=>x.Item);
+        
+        // Configures a mapping from Item to AuctionUpdated
+        CreateMap<Item, AuctionUpdated>();
     }
     
     

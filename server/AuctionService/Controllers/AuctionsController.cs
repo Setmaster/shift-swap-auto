@@ -115,6 +115,9 @@ public class AuctionsController : ControllerBase
         auction.Item.Mileage = updateAuctionDto.Mileage ?? auction.Item.Mileage;
         auction.Item.Year = updateAuctionDto.Year ?? auction.Item.Year;
 
+        // Publishing an event that the acution was updated
+        await _publishEndpoint.Publish(_mapper.Map<AuctionUpdated>(auction));
+        
         var result = await _context.SaveChangesAsync() > 0;
 
         if (result) BadRequest("Could not save changes to the DB");
