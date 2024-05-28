@@ -29,6 +29,14 @@ builder.Services.AddMassTransit(x =>
     // Configures MassTransit to use RabbitMQ as the transport protocol
     x.UsingRabbitMq((context, cfg) =>
     {
+        cfg.ReceiveEndpoint("search-auction-created", e =>
+        {
+            // Configures the consumer to use a message retry policy
+            e.UseMessageRetry(r => r.Interval(5,5 ));
+            
+            e.ConfigureConsumer<AuctionCreatedConsumer>(context);
+        });
+        
         // Automatically configures all endpoints defined by the consumers in the context
         cfg.ConfigureEndpoints(context);
     });
