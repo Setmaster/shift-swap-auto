@@ -22,6 +22,14 @@ public class AuctionCreatedConsumer : IConsumer<AuctionCreated>
         // Map AuctionCreated to Item
         var item = _mapper.Map<Item>(context.Message);
 
+        /*
+         Example of how to handle exceptions and republish the message
+        if (item.Model == "Foo")
+        {
+            throw new ArgumentException("Cannot sell cars with name of Foo.");
+        }
+        */
+        
         // Save Item to MongoDB
         await item.SaveAsync();
     }

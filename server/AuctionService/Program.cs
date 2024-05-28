@@ -1,3 +1,4 @@
+using AuctionService.Consumers;
 using AuctionService.Data;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,10 @@ builder.Services.AddMassTransit(x =>
         cfg.UsePostgres(); // Specifying the use of PostgreSQL for the outbox.
         cfg.UseBusOutbox(); // Enabling the bus outbox integration.
     });
+    
+    x.AddConsumersFromNamespaceContaining<AuctionCreatedFaultConsumer>();
+    
+    x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("auction", false));
     
     // Configuring MassTransit to use RabbitMQ as the transport
     x.UsingRabbitMq((context, cfg) =>
