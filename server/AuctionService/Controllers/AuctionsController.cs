@@ -115,7 +115,7 @@ public class AuctionsController : ControllerBase
         auction.Item.Mileage = updateAuctionDto.Mileage ?? auction.Item.Mileage;
         auction.Item.Year = updateAuctionDto.Year ?? auction.Item.Year;
 
-        // Publishing an event that the acution was updated
+        // Publishing an event that the auction was updated
         await _publishEndpoint.Publish(_mapper.Map<AuctionUpdated>(auction));
         
         var result = await _context.SaveChangesAsync() > 0;
@@ -142,6 +142,9 @@ public class AuctionsController : ControllerBase
         // Removing the auction from the database
         _context.Auctions.Remove(auction);
 
+        // Publishing an event that the auction was deleted
+        await _publishEndpoint.Publish<AuctionDeleted>(new{Id = auction.Id.ToString()});
+        
         var result = await _context.SaveChangesAsync() > 0;
 
         if (!result) return BadRequest("Could not save changes to the DB");
