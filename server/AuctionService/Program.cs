@@ -1,6 +1,7 @@
 using AuctionService.Consumers;
 using AuctionService.Data;
 using MassTransit;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,8 +39,21 @@ builder.Services.AddMassTransit(x =>
     });
 });
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(cfg=> {
+        cfg.Authority = builder.Configuration["IdentityServiceUrl"];
+        cfg.RequireHttpsMetadata = false;
+        
+        // Set the audience validation to false, as we are not using the audience claim
+        cfg.TokenValidationParameters.ValidateAudience = false;
+        
+        // Set the claim type to be used as the name identifier
+        cfg.TokenValidationParameters.NameClaimType = "username";
+    });
 
 var app = builder.Build();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
