@@ -27,26 +27,34 @@ builder.Services.AddMassTransit(x =>
         cfg.UsePostgres(); // Specifying the use of PostgreSQL for the outbox.
         cfg.UseBusOutbox(); // Enabling the bus outbox integration.
     });
-    
+
     x.AddConsumersFromNamespaceContaining<AuctionCreatedFaultConsumer>();
-    
+
     x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("auction", false));
-    
+
     // Configuring MassTransit to use RabbitMQ as the transport
     x.UsingRabbitMq((context, cfg) =>
     {
+        // Configuring the RabbitMQ host
+        cfg.Host(builder.Configuration["RabbitMq:Host"], "/", host =>
+        {
+            host.Username(builder.Configuration.GetValue("RabbitMq:Username", "guest"));
+            host.Password(builder.Configuration.GetValue("RabbitMq:Password", "guest"));
+        });
+
         cfg.ConfigureEndpoints(context);
     });
 });
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(cfg=> {
+    .AddJwtBearer(cfg =>
+    {
         cfg.Authority = builder.Configuration["IdentityServiceUrl"];
         cfg.RequireHttpsMetadata = false;
-        
+
         // Set the audience validation to false, as we are not using the audience claim
         cfg.TokenValidationParameters.ValidateAudience = false;
-        
+
         // Set the claim type to be used as the name identifier
         cfg.TokenValidationParameters.NameClaimType = "username";
     });
