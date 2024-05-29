@@ -66,6 +66,16 @@
       - 5000:80
     depends_on:
       - postgres
+  gateway-service:
+    image: 7devio/gateway-service:latest
+    build:
+      context: .
+      dockerfile: server/GatewayService/DockerFile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - ASPNETCORE_URLS=http://+:80
+    ports:
+      - 6001:80
 volumes:
     pgdata:
     mongodata:
