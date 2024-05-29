@@ -22,15 +22,20 @@ internal static class HostingExtensions
             .AddDefaultTokenProviders();
 
         builder.Services
-            .AddIdentityServer(options =>
+            .AddIdentityServer(cfg =>
             {
-                options.Events.RaiseErrorEvents = true;
-                options.Events.RaiseInformationEvents = true;
-                options.Events.RaiseFailureEvents = true;
-                options.Events.RaiseSuccessEvents = true;
+                cfg.Events.RaiseErrorEvents = true;
+                cfg.Events.RaiseInformationEvents = true;
+                cfg.Events.RaiseFailureEvents = true;
+                cfg.Events.RaiseSuccessEvents = true;
+
+                if (builder.Environment.IsEnvironment("Docker"))
+                {
+                    cfg.IssuerUri = "identity-service";
+                }
 
                 // see https://docs.duendesoftware.com/identityserver/v6/fundamentals/resources/
-                options.EmitStaticAudienceClaim = true;
+                cfg.EmitStaticAudienceClaim = true;
             })
             .AddInMemoryIdentityResources(Config.IdentityResources)
             .AddInMemoryApiScopes(Config.ApiScopes)
