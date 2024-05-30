@@ -11,7 +11,7 @@ import {
     Tabs,
     Burger,
     rem,
-    useMantineTheme, Stack,
+    useMantineTheme, Stack, useComputedColorScheme, Anchor,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import {
@@ -25,7 +25,8 @@ import {
     IconSwitchHorizontal,
     IconChevronDown,
 } from '@tabler/icons-react';
-import shiftSwapperLogo from '@/assets/logo.svg';
+import shiftSwapLogo from '@/assets/logo.svg';
+import shiftSwapLogoLight from '@/assets/logo-light.svg';
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import ColorSchemeToggle from "@/components/ColorSchemeToggle/ColorSchemeToggle";
@@ -61,9 +62,11 @@ const user = {
 
 export default function MainHeader() {
     const theme = useMantineTheme();
+    const computedColorScheme = useComputedColorScheme('light', {getInitialValueInEffect: true});
     const [opened, { toggle }] = useDisclosure(false);
     const [userMenuOpened, setUserMenuOpened] = useState(false);
 
+    
     const path = usePathname();
     const router = useRouter();
 
@@ -124,17 +127,23 @@ export default function MainHeader() {
 
     const dropdownItems = processLinks(links).map((item: LinkItem) => (
         <Menu.Item key={item.link}>
-            <Link href={item.link} className={cx(classes.link, { [classes.active]: isActiveLink(path, item.link) })}>
+            <Anchor component={Link} href={item.link} className={cx(classes.link, { [classes.active]: isActiveLink(path, item.link) })}>
                 {item.label}
-            </Link>
+            </Anchor>
         </Menu.Item>
     ));
 
     return (
         <div className={classes.header}>
-            <Container className={classes.mainSection} size="md">
+            <Container className={classes.topSection} size="md">
                 <Group justify="space-between">
-                    <Image width={56} height={56} style={{ cursor: "pointer" }} src={shiftSwapperLogo.src} onClick={navigateHome} alt={"a white robot with blue eyes"} />
+                    {computedColorScheme !== 'light' && (
+                        <Image width={100} height={100} style={{ cursor: "pointer" }} src={shiftSwapLogo.src} onClick={navigateHome} alt={"text saying shift swap"} />
+                        )}
+                    
+                    {computedColorScheme === 'light' && (
+                        <Image width={100} height={100} style={{ cursor: "pointer" }} src={shiftSwapLogoLight.src} onClick={navigateHome} alt={"text saying shift swap"} />
+                        )}
 
                     <Menu
                         width={260}
@@ -224,10 +233,10 @@ export default function MainHeader() {
                     </Menu>
                 </Group>
             </Container>
-            <Container size="md">
+            <Container fluid className={classes.bottomSection}>
                 <Tabs
                     defaultValue="Home"
-                    variant="outline"
+                    variant="default"
                     visibleFrom="sm"
                     classNames={{
                         root: classes.tabs,
