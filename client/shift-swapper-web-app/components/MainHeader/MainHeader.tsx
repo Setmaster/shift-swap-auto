@@ -25,8 +25,8 @@ import {
     IconSwitchHorizontal,
     IconChevronDown,
 } from '@tabler/icons-react';
-import shiftSwapLogo from '@/assets/logo.svg';
-import shiftSwapLogoLight from '@/assets/logo-light.svg';
+import shiftSwapLogo from '@/assets/logo.min.svg';
+import shiftSwapLogoLight from '@/assets/logo-light.min.svg';
 import {usePathname, useRouter} from "next/navigation";
 import Image from "next/image";
 import ColorSchemeToggle from "@/components/ColorSchemeToggle/ColorSchemeToggle";
@@ -152,8 +152,8 @@ export default function MainHeader() {
                                onClick={navigateHome} alt={"text saying shift swap"}/>
                     )}
 
-                    <UserMainHeaderMenu user={user}/>
                     <Search/>
+                    <UserMainHeaderMenu user={user}/>
                     <Menu shadow="md" width={200} opened={opened} onChange={toggle} withinPortal>
                         <Menu.Target>
                             <Burger opened={opened} onClick={toggle} size="sm" hiddenFrom="sm"/>
