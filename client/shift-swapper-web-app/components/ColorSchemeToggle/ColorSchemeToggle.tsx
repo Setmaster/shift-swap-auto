@@ -39,9 +39,10 @@ export default function ColorSchemeToggle({ justify = 'center' }) {
 
     return (
         <Group justify={justify}>
+            <span>Theme</span>
             <Switch
                 size="md"
-                color="dark.4"
+                color="dark.3"
                 checked={checked}
                 onChange={handleChange}
                 onLabel={sunIcon}
