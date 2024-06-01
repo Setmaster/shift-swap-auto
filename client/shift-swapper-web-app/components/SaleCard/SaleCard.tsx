@@ -84,7 +84,7 @@ export default function SaleCard({ data }: SaleCardProps) {
                 {`${data.year} ${data.make} ${data.model}`}
             </Text>
 
-            <Text fw={400} className={classes.subText}  mt="xs">
+            <Text fw={300} className={classes.subText}  mt="xs">
                 {`${data.color} • ${getTrimMiles(data.mileage)} miles`}
             </Text>
 

@@ -27,6 +27,7 @@ import {
 } from '@tabler/icons-react';
 import shiftSwapLogo from '@/assets/logo.min.svg';
 import shiftSwapLogoLight from '@/assets/logo-light.min.svg';
+import shiftSwapIcon from '@/assets/icon.svg';
 import {usePathname, useRouter} from "next/navigation";
 import Image from "next/image";
 import ColorSchemeToggle from "@/components/ColorSchemeToggle/ColorSchemeToggle";
@@ -142,19 +143,33 @@ export default function MainHeader() {
         <div className={classes.header}>
             <Container className={classes.topSection} size="md">
                 <Group justify="space-between">
-                    {computedColorScheme !== 'light' && (
-                        <Image width={100} height={100} style={{cursor: "pointer"}} src={shiftSwapLogo.src}
-                               onClick={navigateHome} alt={"text saying shift swap"}/>
-                    )}
+                    <Group visibleFrom="xs">
+                        {computedColorScheme !== 'light' && (
+                            <Image width={100} height={100} style={{cursor: "pointer"}} src={shiftSwapLogo.src}
+                                   onClick={navigateHome} alt={"text saying shift swap"}/>
+                        )}
 
-                    {computedColorScheme === 'light' && (
-                        <Image width={100} height={100} style={{cursor: "pointer"}} src={shiftSwapLogoLight.src}
-                               onClick={navigateHome} alt={"text saying shift swap"}/>
-                    )}
-
+                        {computedColorScheme === 'light' && (
+                            <Image width={100} height={100} style={{cursor: "pointer"}} src={shiftSwapLogoLight.src}
+                                   onClick={navigateHome} alt={"text saying shift swap"}/>
+                        )}
+                    </Group>
+                    <Group hiddenFrom="xs">
+                        <Image width={25} height={25} style={{cursor: "pointer"}} src={shiftSwapIcon.src}
+                               onClick={navigateHome} alt={"s"}/>
+                    </Group>
+                    
+                    <Search popOver={true}/>
                     <Search/>
                     <UserMainHeaderMenu user={user}/>
-                    <Menu shadow="md" width={200} opened={opened} onChange={toggle} withinPortal>
+                    <Menu
+                        shadow="md"
+                        width={200}
+                        opened={opened}
+                        onChange={toggle}
+                        withinPortal
+
+                    >
                         <Menu.Target>
                             <Burger opened={opened} onClick={toggle} size="sm" hiddenFrom="sm"/>
                         </Menu.Target>
