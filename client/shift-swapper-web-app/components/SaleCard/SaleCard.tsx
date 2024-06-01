@@ -1,17 +1,7 @@
 ﻿'use client';
 
-import {
-    Card,
-    ActionIcon,
-    Group,
-    Text,
-    Avatar,
-    Badge,
-    useMantineTheme,
-    rem,
-} from '@mantine/core';
-import {Image as MantineImage} from '@mantine/core';
-import { IconHeart, IconBookmark, IconShare } from '@tabler/icons-react';
+import {ActionIcon, Card, Group, rem, Text, useMantineTheme,} from '@mantine/core';
+import {IconBookmark, IconHeart, IconShare} from '@tabler/icons-react';
 import classes from './SaleCard.module.css';
 import Link from "next/link";
 import Image from "next/image";
@@ -36,17 +26,17 @@ type SaleCardProps = {
 };
 
 function getTrimMiles(miles: number): string {
-    if(miles >= 1000) {
-        return `${(miles/1000).toFixed(0)}k`;
+    if (miles >= 1000) {
+        return `${(miles / 1000).toFixed(0)}k`;
     }
     return miles.toString();
 }
 
 function getCurrentPrice(currentHighBid: number, reservePrice: number): string {
-    const formatCurrency = (amount : number) => {
+    const formatCurrency = (amount: number) => {
         return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(amount);
     };
-    if(currentHighBid >= reservePrice && (currentHighBid != 0 && reservePrice != 0)) {
+    if (currentHighBid >= reservePrice && (currentHighBid != 0 && reservePrice != 0)) {
         return formatCurrency(currentHighBid);
     }
     return `${formatCurrency(reservePrice)}`;
@@ -55,7 +45,6 @@ function getCurrentPrice(currentHighBid: number, reservePrice: number): string {
 export default function SaleCard({ data }: SaleCardProps) {
 
     const theme = useMantineTheme();
-    console.log(data.auctionEnd);
     return (
         <Card
             withBorder
@@ -73,6 +62,7 @@ export default function SaleCard({ data }: SaleCardProps) {
                         src={data.imageUrl}
                         alt={`${data.year} ${data.make} ${data.model}`}
                         fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         style={{ objectFit: 'cover', objectPosition: 'center' }}
                     />
                 </div>
@@ -80,34 +70,18 @@ export default function SaleCard({ data }: SaleCardProps) {
             <Group className={classes.countdown}>
                 <CountdownTimer auctionEnd={data.auctionEnd} />
             </Group>
-            {/*<Badge w="fit-content" variant="light">*/}
-            {/*    decorations*/}
-            {/*</Badge>*/}
 
             <Text fw={700} className={classes.title} mt="xs">
                 {`${data.year} ${data.make} ${data.model}`}
             </Text>
 
-            <Text fw={300} className={classes.subText}  mt="xs">
+            <Text fw={300} className={classes.subText} mt="xs">
                 {`${data.color} • ${getTrimMiles(data.mileage)} miles`}
             </Text>
 
-            <Text fw={600} className={classes.price}  mt="xxl">
+            <Text fw={600} className={classes.price} mt="xxl">
                 {`${getCurrentPrice(data.currentHighBid, data.reservePrice)} `}
             </Text>
-            
-            {/*<Group mt="lg">*/}
-            {/*    <Avatar*/}
-            {/*        src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-7.png"*/}
-            {/*        radius="sm"*/}
-            {/*    />*/}
-            {/*    <div>*/}
-            {/*        <Text fw={500}>Elsa Gardenowl</Text>*/}
-            {/*        <Text fz="xs" c="dimmed">*/}
-            {/*            posted 34 minutes ago*/}
-            {/*        </Text>*/}
-            {/*    </div>*/}
-            {/*</Group>*/}
 
             <Card.Section className={classes.footer}>
                 <Group justify="space-between">

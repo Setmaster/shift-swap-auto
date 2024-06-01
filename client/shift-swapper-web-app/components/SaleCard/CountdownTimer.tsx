@@ -1,7 +1,8 @@
 ﻿'use client';
 
+import React, { useEffect, useState } from 'react';
 import Countdown, { zeroPad } from 'react-countdown';
-import {Badge} from "@mantine/core";
+import { Badge } from "@mantine/core";
 
 type rendererArgs = {
     days: number;
@@ -17,26 +18,32 @@ type CountdownTimerProps = {
 
 const renderer = ({ days, hours, minutes, seconds, completed }: rendererArgs) => {
     if (completed) {
-        // Render a completed state
-        return <Badge
-            color="red"
-            size="xl"
-        >Sale Ended</Badge>;
+        return <Badge color="red" size="xl">Sale Ended</Badge>;
     } else {
-        // Render a countdown
-        return <Badge 
-            color="green"
-            size="xl"
-        >{zeroPad(days)}:{zeroPad(hours)}:{zeroPad(minutes)}:{zeroPad(seconds)}</Badge>;
+        return (
+            <Badge color="green" size="xl">
+                {zeroPad(days)}:{zeroPad(hours)}:{zeroPad(minutes)}:{zeroPad(seconds)}
+            </Badge>
+        );
     }
 };
 
-export default function CountdownTimer({auctionEnd}: CountdownTimerProps) {
+export default function CountdownTimer({ auctionEnd }: CountdownTimerProps) {
+    const [isClient, setIsClient] = useState(false);
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
+
+    if (!isClient) {
+        // Return null during SSR
+        return null;
+    }
+
     return (
         <Countdown
             date={auctionEnd}
             renderer={renderer}
         />
-        
     );
 }
