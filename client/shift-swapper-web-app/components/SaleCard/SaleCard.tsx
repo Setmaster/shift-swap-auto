@@ -15,6 +15,7 @@ import { IconHeart, IconBookmark, IconShare } from '@tabler/icons-react';
 import classes from './SaleCard.module.css';
 import Link from "next/link";
 import Image from "next/image";
+import CountdownTimer from "@/components/SaleCard/CountdownTimer";
 
 type SaleCardData = {
     id: string; // auctionId
@@ -27,6 +28,7 @@ type SaleCardData = {
     imageUrl: string;
     currentHighBid: number;
     reservePrice: number;
+    auctionEnd: string;
 };
 
 type SaleCardProps = {
@@ -53,7 +55,7 @@ function getCurrentPrice(currentHighBid: number, reservePrice: number): string {
 export default function SaleCard({ data }: SaleCardProps) {
 
     const theme = useMantineTheme();
-    console.log(data);
+    console.log(data.auctionEnd);
     return (
         <Card
             withBorder
@@ -75,7 +77,9 @@ export default function SaleCard({ data }: SaleCardProps) {
                     />
                 </div>
             </Card.Section>
-
+            <Group className={classes.countdown}>
+                <CountdownTimer auctionEnd={data.auctionEnd} />
+            </Group>
             {/*<Badge w="fit-content" variant="light">*/}
             {/*    decorations*/}
             {/*</Badge>*/}

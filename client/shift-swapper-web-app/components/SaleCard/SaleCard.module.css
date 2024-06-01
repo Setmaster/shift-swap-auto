@@ -37,3 +37,10 @@
     overflow: hidden;
     position: relative;
 }
+
+.countdown {
+    position: absolute;
+    top: var(--mantine-spacing-xs);
+    right: rem(12px);
+    pointer-events: none;
+}
