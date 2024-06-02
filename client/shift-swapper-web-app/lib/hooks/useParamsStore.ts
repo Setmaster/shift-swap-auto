@@ -1,4 +1,6 @@
 ﻿import {create} from "zustand";
+import {createWithEqualityFn} from "zustand/traditional";
+import {shallow} from "zustand/shallow";
 
 type State = {
     pageNumber: number;
@@ -19,7 +21,7 @@ const initialState: State = {
     searchTerm: '',
 };
 
-export const useParamsStore = create<State & Actions>((set) => ({
+export const useParamsStore = createWithEqualityFn<State & Actions>((set) => ({
     ...initialState,
     setParams: (params) => {
         set((state) => {
@@ -39,4 +41,4 @@ export const useParamsStore = create<State & Actions>((set) => ({
     },
 
     resetParams: () => set(initialState),
-}));
+}), shallow);

@@ -21,7 +21,7 @@ export default function Listings() {
             pageNumber: state.pageNumber,
             pageSize: state.pageSize,
             searchTerm: state.searchTerm,
-        }), shallow);
+        }));
     const setParams = useParamsStore((state) => state.setParams);
     const url = qs.stringify(params);
 
