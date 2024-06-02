@@ -1,6 +1,6 @@
 ﻿'use client';
 
-import {Anchor, Group, Menu, rem, Text, UnstyledButton, useMantineTheme} from "@mantine/core";
+import {Anchor, Button, Group, Menu, rem, Text, UnstyledButton, useMantineTheme} from "@mantine/core";
 import cx from "clsx";
 import classes from "./UserMainHeaderMenu.module.css";
 import {
@@ -13,31 +13,31 @@ import {
 } from "@tabler/icons-react";
 import ColorSchemeToggle from "@/components/ColorSchemeToggle/ColorSchemeToggle";
 import {useState} from "react";
-import Link from "next/link";
+import {signIn} from "next-auth/react";
+
 
 type UserMainHeaderMenuProps = {
     user: {
         name: string;
         email: string;
     }
-} 
+}
 
 export default function UserMainHeaderMenu({user}: UserMainHeaderMenuProps) {
     const theme = useMantineTheme();
     const [userMenuOpened, setUserMenuOpened] = useState(false);
-    const isUserLoggedIn = true;
-    
+    const isUserLoggedIn = false;
+
+    const handleLogin = () => {
+        signIn('id-server', {callbackUrl: '/'})
+    };
+
     if(!isUserLoggedIn){
-        return <Anchor
-            className={classes.loginButton}
-            underline="never"
-            component={Link}
-            href=""
-        >
+        return <Button onClick={handleLogin} variant="default">
             Login
-        </Anchor>
+        </Button>
     }
-    
+
     return (
         <Menu
             width={260}
@@ -106,7 +106,7 @@ export default function UserMainHeaderMenu({user}: UserMainHeaderMenuProps) {
                     Delete account
                 </Menu.Item>
                 <Menu.Item>
-                    <div className={cx(classes.dropdownColorSchemeToggle)} >
+                    <div className={cx(classes.dropdownColorSchemeToggle)}>
                         <ColorSchemeToggle justify={'left'} />
                     </div>
                 </Menu.Item>

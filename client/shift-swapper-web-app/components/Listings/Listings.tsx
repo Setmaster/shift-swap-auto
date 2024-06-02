@@ -8,7 +8,6 @@ import ListingPagination from "@/components/ListingPagination/ListingPagination"
 import {useEffect, useState} from "react";
 import ListingFilters from "@/components/ListingFilters/ListingFilters";
 import {useParamsStore} from "@/lib/hooks/useParamsStore";
-import {shallow} from "zustand/shallow"; // Import the custom hook
 import qs from 'query-string';
 import {getData} from "@/lib/actions/auctionActions";
 import NoResultsFilterError from "@/components/NoResultsFilterError/NoResultsFilterError";

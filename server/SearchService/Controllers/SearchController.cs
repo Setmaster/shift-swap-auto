@@ -11,11 +11,11 @@ namespace SearchService.Controllers
     {
         [HttpGet]
         // FromQuery attribute is used to bind the search parameters from the query string
-        public async Task<ActionResult<List<Item>>> SearchItems([FromQuery]SearchParams searchParams)
+        public async Task<ActionResult<List<Item>>> SearchItems([FromQuery] SearchParams searchParams)
         {
             // Deconstruct the searchParams
             var (searchTerm, pageNumber, pageSize, seller, winner, orderBy, filterBy) = searchParams;
-            
+
             // Create a paged search query for the 'Item' collection
             // Using <Item, Item> to comply with the library's design, allowing different types for the entity and result
             var query = DB.PagedSearch<Item, Item>();
@@ -25,12 +25,13 @@ namespace SearchService.Controllers
             {
                 query.Match(Search.Full, searchTerm).SortByTextScore();
             }
-            
+
             // Apply sorting based on the 'orderBy' parameter
             query = orderBy switch
             {
-                // Sort by 'Make' in ascending order
-                "make" => query.Sort(x => x.Ascending(a => a.Make)),
+                // Sort by 'Make' in ascending order and then by 'Model' in ascending order
+                "make" => query.Sort(x => x.Ascending(a => a.Make))
+                    .Sort(x => x.Ascending(a => a.Model)),
                 // Sort by 'CreatedAt' in descending order (newest first)
                 "new" => query.Sort(x => x.Descending(a => a.CreatedAt)),
                 // Default sorting by 'AuctionEnd' in ascending order
@@ -43,7 +44,8 @@ namespace SearchService.Controllers
                 // Filter to include only finished auctions (AuctionEnd date is in the past)
                 "finished" => query.Match(x => x.AuctionEnd < DateTime.UtcNow),
                 // Filter to include auctions ending soon (within the next 6 hours)
-                "endingSoon" => query.Match(x => x.AuctionEnd < DateTime.UtcNow.AddHours(6) && x.AuctionEnd > DateTime.UtcNow),
+                "endingSoon" => query.Match(x =>
+                    x.AuctionEnd < DateTime.UtcNow.AddHours(6) && x.AuctionEnd > DateTime.UtcNow),
                 // Default filter to include only ongoing auctions (AuctionEnd date is in the future)
                 _ => query.Match(x => x.AuctionEnd > DateTime.UtcNow)
             };
@@ -59,7 +61,7 @@ namespace SearchService.Controllers
             {
                 query.Match(x => x.Winner == winner);
             }
-            
+
             // Set the page number and page size for the query
             query.PageNumber(pageNumber).PageSize(pageSize);
 
