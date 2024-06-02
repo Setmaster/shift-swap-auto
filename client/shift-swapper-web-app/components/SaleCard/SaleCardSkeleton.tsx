@@ -11,8 +11,7 @@ export default function SaleCardSkeleton() {
             <Skeleton height={20} mt="xs" width="70%" />
             <Skeleton height={30} mt="xxl" width="50%" />
             <Card.Section className={classes.footer}>
-                <Skeleton height={20} width="50%" />
-                <Skeleton height={20} width="20%" />
+                <Skeleton height={28} width="50%" />
             </Card.Section>
         </Card>
     );
