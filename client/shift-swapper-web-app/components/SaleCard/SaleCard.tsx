@@ -1,7 +1,7 @@
 ﻿'use client';
 
 import {ActionIcon, Card, Group, rem, Text, useMantineTheme,} from '@mantine/core';
-import {IconBookmark, IconHeart, IconShare} from '@tabler/icons-react';
+import {IconBookmark, IconHeart, IconShare, IconStar} from '@tabler/icons-react';
 import classes from './SaleCard.module.css';
 import Link from "next/link";
 import CountdownTimer from "@/components/SaleCard/CountdownTimer";
@@ -69,18 +69,11 @@ export default function SaleCard({data}: SaleCardProps) {
             <Card.Section className={classes.footer}>
                 <Group justify="space-between">
                     <Text fz="xs" c="dimmed">
-                        733 people liked this
+                        53 people bidding
                     </Text>
                     <Group gap={0}>
                         <ActionIcon variant="subtle" color="gray">
-                            <IconHeart
-                                style={{width: rem(20), height: rem(20)}}
-                                color={theme.colors.red[6]}
-                                stroke={1.5}
-                            />
-                        </ActionIcon>
-                        <ActionIcon variant="subtle" color="gray">
-                            <IconBookmark
+                            <IconStar
                                 style={{width: rem(20), height: rem(20)}}
                                 color={theme.colors.yellow[6]}
                                 stroke={1.5}

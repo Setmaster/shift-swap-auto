@@ -9,12 +9,26 @@ export const authOptions: NextAuthOptions = {
         DuendeIdentityServer6({
             id: 'id-server',
             clientId: 'nextApp',
-            clientSecret: 'secret',
+            clientSecret: process.env.NEXTAUTH_SECRET!,
             issuer: 'http://localhost:5000',
             authorization: {params: {scope: 'openid profile auctionApp'}},
             idToken: true
         })
     ],
+    callbacks: {
+        async jwt({token, profile}) {
+            if(profile){
+                token.username = profile.username;
+            }
+            return token;
+        },
+        async session({session, token}) {
+            if (token) {
+                session.user.username = token.username
+            }
+            return session;
+        }
+    }
 }
 
 const handler = NextAuth(authOptions);

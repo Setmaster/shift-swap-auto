@@ -4,35 +4,37 @@ import {Anchor, Button, Group, Menu, rem, Text, UnstyledButton, useMantineTheme}
 import cx from "clsx";
 import classes from "./UserMainHeaderMenu.module.css";
 import {
+    IconCar,
     IconChevronDown,
     IconHeart, IconLogout,
     IconMessage, IconPlayerPause,
     IconSettings,
     IconStar,
-    IconSwitchHorizontal, IconTrash
+    IconSwitchHorizontal, IconTrash, IconTrophy, IconUser
 } from "@tabler/icons-react";
 import ColorSchemeToggle from "@/components/ColorSchemeToggle/ColorSchemeToggle";
-import {useState} from "react";
-import {signIn} from "next-auth/react";
-
+import {useEffect, useState} from "react";
+import {signIn, signOut} from "next-auth/react";
+import {getCurrentUser} from "@/lib/actions/authActions";
+import {getData} from "@/lib/actions/auctionActions";
+import {User} from "next-auth";
 
 type UserMainHeaderMenuProps = {
-    user: {
-        name: string;
-        email: string;
-    }
+    user: Partial<User> | null;
 }
-
-export default function UserMainHeaderMenu({user}: UserMainHeaderMenuProps) {
+export default function UserMainHeaderMenu({user} : UserMainHeaderMenuProps) {
     const theme = useMantineTheme();
     const [userMenuOpened, setUserMenuOpened] = useState(false);
-    const isUserLoggedIn = false;
-
+    
     const handleLogin = () => {
         signIn('id-server', {callbackUrl: '/'})
     };
-
-    if(!isUserLoggedIn){
+    
+    const handleLogout = () => {
+        signOut({callbackUrl: '/'});
+    }
+    
+    if(!user){
         return <Button onClick={handleLogin} variant="default">
             Login
         </Button>
@@ -51,7 +53,7 @@ export default function UserMainHeaderMenu({user}: UserMainHeaderMenuProps) {
                 <UnstyledButton className={cx(classes.user, { [classes.userActive]: userMenuOpened })}>
                     <Group gap={7}>
                         <Text fw={500} size="sm" lh={1} mr={3}>
-                            {user.name}
+                            {user.username}
                         </Text>
                         <IconChevronDown style={{ width: rem(12), height: rem(12) }} stroke={1.5} />
                     </Group>
@@ -59,57 +61,40 @@ export default function UserMainHeaderMenu({user}: UserMainHeaderMenuProps) {
             </Menu.Target>
             <Menu.Dropdown>
                 <Menu.Item
-                    leftSection={<IconHeart style={{ width: rem(16), height: rem(16) }} color={theme.colors.red[6]} stroke={1.5} />}
+                    leftSection={<IconUser style={{ width: rem(16), height: rem(16) }} color={theme.colors.green[6]} stroke={1.5} />}
                 >
-                    Liked posts
+                    My Auctions
+                </Menu.Item>
+                <Menu.Item
+                    leftSection={<IconTrophy style={{ width: rem(16), height: rem(16) }} color={theme.colors.yellow[6]} stroke={1.5} />}
+                >
+                    Auctions won
+                </Menu.Item>
+                <Menu.Item
+                    leftSection={<IconCar style={{ width: rem(16), height: rem(16) }} color={theme.colors.blue[6]} stroke={1.5} />}
+                >
+                    Sell my vehicle
                 </Menu.Item>
                 <Menu.Item
                     leftSection={<IconStar style={{ width: rem(16), height: rem(16) }} color={theme.colors.yellow[6]} stroke={1.5} />}
                 >
                     Saved posts
                 </Menu.Item>
-                <Menu.Item
-                    leftSection={<IconMessage style={{ width: rem(16), height: rem(16) }} color={theme.colors.blue[6]} stroke={1.5} />}
-                >
-                    Your comments
-                </Menu.Item>
-
-                <Menu.Label>Settings</Menu.Label>
-                <Menu.Item
-                    leftSection={<IconSettings style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
-                >
-                    Account settings
-                </Menu.Item>
-                <Menu.Item
-                    leftSection={<IconSwitchHorizontal style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
-                >
-                    Change account
-                </Menu.Item>
-                <Menu.Item
-                    leftSection={<IconLogout style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
-                >
-                    Logout
-                </Menu.Item>
 
                 <Menu.Divider />
+                <Menu.Label>Settings</Menu.Label>
 
-                <Menu.Label>Danger zone</Menu.Label>
-                <Menu.Item
-                    leftSection={<IconPlayerPause style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
-                >
-                    Pause subscription
-                </Menu.Item>
-                <Menu.Item
-                    color="red"
-                    leftSection={<IconTrash style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
-                >
-                    Delete account
-                </Menu.Item>
                 <Menu.Item>
                     <div className={cx(classes.dropdownColorSchemeToggle)}>
                         <ColorSchemeToggle justify={'left'} />
                     </div>
                 </Menu.Item>
+                <Menu.Item
+                    onClick={handleLogout} leftSection={<IconLogout style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
+                >
+                    Logout
+                </Menu.Item>
+
             </Menu.Dropdown>
         </Menu>
     );

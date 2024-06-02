@@ -28,3 +28,9 @@ enum Status {
     Finished,
     ReserveNotMet
 }
+
+type LinkItem = {
+    link: string;
+    label: string;
+    links?: LinkItem[];
+}
