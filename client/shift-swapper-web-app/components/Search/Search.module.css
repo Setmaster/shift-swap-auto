@@ -1,11 +1,17 @@
-﻿.search{
-    
+﻿.search {
+    width: rem(400px);
+    @media (max-width: em(730px)) {
+        width: rem(300px);
+    }
+    @media (max-width: em(630px)) {
+        width: rem(200px);
+    }
 }
 
-.popover{
+.popover {
 
 }
 
-.popoverButton{
+.popoverButton {
 
 }

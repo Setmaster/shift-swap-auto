@@ -1,7 +1,7 @@
 .header {
     height: rem(120px);
     margin-bottom: rem(60px);
-    @media (max-width: em(400px)) {
+    @media (max-width: em(575px)) {
         height: rem(60px);
         margin-bottom: rem(30px);
     }
