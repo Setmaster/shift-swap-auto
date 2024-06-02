@@ -1,3 +1,11 @@
 ﻿.listingsContainer{
     max-width: 95%;
 }
+
+.paginationGroup{
+    display: flex;
+    justify-content: center;
+    margin-top: rem(20px);
+    margin-bottom: rem(20px);
+    width: 90%;
+}

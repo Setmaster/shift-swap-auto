@@ -28,7 +28,7 @@ export default function SaleImage({data }: SaleImageProps) {
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             style={{ objectFit: 'cover', objectPosition: 'center' }}
-            onLoadingComplete={() => setIsLoading(false)}
+            onLoad={() => setIsLoading(false)}
         />
         </>
     );

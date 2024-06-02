@@ -1,29 +1,39 @@
-﻿import SaleCard from "@/components/SaleCard/SaleCard";
-import {Container, SimpleGrid} from "@mantine/core";
+﻿'use client';
+
+import SaleCard from "@/components/SaleCard/SaleCard";
+import SaleCardSkeleton from "@/components/SaleCard/SaleCardSkeleton";
+import { Container, Group, SimpleGrid } from "@mantine/core";
 import classes from './Listings.module.css';
+import ListingPagination from "@/components/ListingPagination/ListingPagination";
+import { useState } from "react";
+import { useAuctions } from "@/lib/hooks/useAuctions"; // Import the custom hook
 
-async function getData() : Promise<PagedResult<Auction>> {
-    const response = await fetch('http://localhost:6001/search?pageSize=10');
+export default function Listings() {
+    const [activePage, setActivePage] = useState(1);
+    const { auctions, pageCount, loading } = useAuctions(activePage); // Use the custom hook
 
-    if (!response.ok) {
-        throw new Error('Failed to fetch data');
-    }
+    const cards = auctions.map((item: Auction) => (
+        <SaleCard key={item.id} data={item} />
+    ));
 
-    return response.json();
-}
+    const skeletons = Array.from({ length: 4 }).map((_, index) => (
+        <SaleCardSkeleton key={index} />
+    ));
 
-export default async function Listings() {
-    const data = await getData();
-
-    const cards = data.results.map((item: Auction) => {
-        return (<SaleCard key={item.id} data={item}/>);
-    });
-    
     return (
-        <Container fluid className={classes.listingsContainer}>
-        <SimpleGrid cols={{ base: 1, sm: 2, md:3, xl:4 }}>
-            {cards}
-        </SimpleGrid>
-        </Container>
+        <>
+            <Container fluid className={classes.listingsContainer}>
+                <SimpleGrid cols={{ base: 1, sm: 2, md: 3, xl: 4 }}>
+                    {loading ? skeletons : cards}
+                </SimpleGrid>
+            </Container>
+            <Group className={classes.paginationGroup}>
+                <ListingPagination
+                    activePage={activePage}
+                    pageCount={pageCount}
+                    setActivePage={setActivePage}
+                />
+            </Group>
+        </>
     );
 }
