@@ -6,8 +6,7 @@ import { Container, Group, SimpleGrid } from "@mantine/core";
 import classes from './Listings.module.css';
 import ListingPagination from "@/components/ListingPagination/ListingPagination";
 import { useEffect, useState } from "react";
-import { useAuctions } from "@/lib/hooks/useAuctions";
-import ListingFilter from "@/components/ListingFilter/ListingFilter";
+import ListingFilters from "@/components/ListingFilters/ListingFilters";
 import { useParamsStore } from "@/lib/hooks/useParamsStore";
 import { shallow } from "zustand/shallow"; // Import the custom hook
 import qs from 'query-string';
@@ -21,6 +20,7 @@ export default function Listings() {
             pageNumber: state.pageNumber,
             pageSize: state.pageSize,
             searchTerm: state.searchTerm,
+            orderBy: state.orderBy,
         }));
     const setParams = useParamsStore((state) => state.setParams);
     const url = qs.stringify(params);
@@ -47,9 +47,8 @@ export default function Listings() {
 
     return (
         <>
-            <Group className={classes.filterGroup}>
-                <ListingFilter />
-            </Group>
+                <ListingFilters />
+
             <Container fluid className={classes.listingsContainer}>
                 <SimpleGrid cols={{ base: 1, sm: 2, md: 3, xl: 4 }}>
                     {loading ? skeletons : cards}

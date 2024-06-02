@@ -1,36 +1,19 @@
 'use client';
 import cx from 'clsx';
-import {useState} from 'react';
 import {
-    Container,
-    Avatar,
-    UnstyledButton,
-    Group,
-    Text,
-    Menu,
-    Tabs,
+    Anchor,
     Burger,
-    rem,
-    useMantineTheme, Stack, useComputedColorScheme, Anchor,
+    Container,
+    Group,
+    Menu,
+    Stack,
+    Tabs,
+    useComputedColorScheme,
+    useMantineTheme,
 } from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
-import {
-    IconLogout,
-    IconHeart,
-    IconStar,
-    IconMessage,
-    IconSettings,
-    IconPlayerPause,
-    IconTrash,
-    IconSwitchHorizontal,
-    IconChevronDown,
-} from '@tabler/icons-react';
-import shiftSwapLogo from '@/assets/logo.min.svg';
-import shiftSwapLogoLight from '@/assets/logo-light.min.svg';
-import shiftSwapIcon from '@/assets/icon.svg';
-import {usePathname, useRouter} from "next/navigation";
-import Image from "next/image";
-import ColorSchemeToggle from "@/components/ColorSchemeToggle/ColorSchemeToggle";
+import {IconChevronDown,} from '@tabler/icons-react';
+import {usePathname} from "next/navigation";
 import Search from "@/components/Search/Search";
 import Link from "next/link";
 import classes from './MainHeader.module.css';

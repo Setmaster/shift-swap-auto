@@ -1,0 +1,14 @@
+﻿.filtersGroup{
+    display: flex;
+    justify-content: space-between;
+    margin-top: rem(20px);
+    margin-bottom: rem(20px);
+    margin-left: rem(20px);
+    align-items: center;
+    width: 90%;
+}
+
+.firstButton{
+    border-top-left-radius: var(--mantine-radius-xl);
+    border-bottom-left-radius: var(--mantine-radius-xl);
+}
