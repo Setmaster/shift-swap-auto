@@ -7,11 +7,13 @@ type State = {
     pageSize: number;
     pageCount: number;
     searchTerm: string;
+    searchValue: string;
 }
 
 type Actions = {
     setParams: (params: Partial<State>) => void;
     resetParams: () => void;
+    setSearchValue: (value: string) => void;
 }
 
 const initialState: State = {
@@ -19,6 +21,7 @@ const initialState: State = {
     pageSize: 16,
     pageCount: 1,
     searchTerm: '',
+    searchValue: '',
 };
 
 export const useParamsStore = createWithEqualityFn<State & Actions>((set) => ({
@@ -41,4 +44,5 @@ export const useParamsStore = createWithEqualityFn<State & Actions>((set) => ({
     },
 
     resetParams: () => set(initialState),
+    setSearchValue: (value) => set({searchValue: value}),
 }), shallow);

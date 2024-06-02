@@ -1,14 +1,27 @@
-﻿import React from "react";
+﻿'use client';
+
+import React, {useState} from "react";
 import {Autocomplete, Button, Group, Popover, rem} from "@mantine/core";
 import classes from "./Search.module.css";
 import {IconSearch} from "@tabler/icons-react";
+import {useParamsStore} from "@/lib/hooks/useParamsStore";
 
 type SearchProps = {
     popOver?: boolean;
 };
 
 export default function Search({popOver: popover = false}) {
-
+    const setParams = useParamsStore(state => state.setParams);
+    const setSearchValue = useParamsStore(state => state.setSearchValue);
+    const searchValue = useParamsStore(state => state.searchValue);
+    function onChange(input : string){
+        setSearchValue(input);
+    }
+    
+    function search(){
+        setParams({searchTerm: searchValue});
+    }
+    
     if (popover) {
         return (
             <Group
@@ -34,6 +47,13 @@ export default function Search({popOver: popover = false}) {
                             leftSection={<IconSearch style={{width: rem(16), height: rem(16)}} stroke={1.5}/>}
                             data={['Ford', 'Honda', 'Toyota', 'Tesla', 'BMW']}
                             comboboxProps={{withinPortal: false}}
+                            value={searchValue}
+                            onChange={onChange}
+                            onKeyDown={(event) => {
+                                if (event.key === 'Enter') {
+                                    search();
+                                }
+                            }}
                         />
                     </Popover.Dropdown>
                 </Popover>
@@ -44,10 +64,17 @@ export default function Search({popOver: popover = false}) {
     return (
         <Autocomplete
             className={classes.search}
-            placeholder="Search"
+            placeholder="Search Make, Model, or Keyword"
             leftSection={<IconSearch style={{width: rem(16), height: rem(16)}} stroke={1.5}/>}
             data={['Ford', 'Honda', 'Toyota', 'Tesla', 'BMW']}
             visibleFrom="xs"
+            value={searchValue}
+            onChange={onChange}
+            onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                    search();
+                }
+            }}
         />
     );
 }

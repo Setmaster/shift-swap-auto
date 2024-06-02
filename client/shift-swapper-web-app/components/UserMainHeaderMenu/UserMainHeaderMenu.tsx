@@ -106,7 +106,7 @@ export default function UserMainHeaderMenu({user}: UserMainHeaderMenuProps) {
                     Delete account
                 </Menu.Item>
                 <Menu.Item>
-                    <div className={cx(classes.dropdownColorSchemeToggle, "mantine-visible-from-sm")} >
+                    <div className={cx(classes.dropdownColorSchemeToggle)} >
                         <ColorSchemeToggle justify={'left'} />
                     </div>
                 </Menu.Item>

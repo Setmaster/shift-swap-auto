@@ -35,6 +35,7 @@ import Search from "@/components/Search/Search";
 import Link from "next/link";
 import classes from './MainHeader.module.css';
 import UserMainHeaderMenu from "@/components/UserMainHeaderMenu/UserMainHeaderMenu";
+import ShiftSwapLogo from "@/components/ShiftSwapLogo/ShiftSwapLogo";
 
 // Define the interface for links
 interface LinkItem {
@@ -70,9 +71,6 @@ export default function MainHeader() {
 
 
     const path = usePathname();
-    const router = useRouter();
-
-    const navigateHome = () => router.push('/');
 
     const isActiveLink = (currentPath: string, link: string) => {
         const normalizePath = (path: string) => path.endsWith('/') ? path.slice(0, -1) : path;
@@ -143,22 +141,8 @@ export default function MainHeader() {
         <div className={classes.header}>
             <Container className={classes.topSection} size="md">
                 <Group justify="space-between">
-                    <Group visibleFrom="xs">
-                        {computedColorScheme !== 'light' && (
-                            <Image width={100} height={100} style={{cursor: "pointer"}} src={shiftSwapLogo.src}
-                                   onClick={navigateHome} alt={"text saying shift swap"}/>
-                        )}
 
-                        {computedColorScheme === 'light' && (
-                            <Image width={100} height={100} style={{cursor: "pointer"}} src={shiftSwapLogoLight.src}
-                                   onClick={navigateHome} alt={"text saying shift swap"}/>
-                        )}
-                    </Group>
-                    <Group hiddenFrom="xs">
-                        <Image width={25} height={25} style={{cursor: "pointer"}} src={shiftSwapIcon.src}
-                               onClick={navigateHome} alt={"s"}/>
-                    </Group>
-                    
+                    <ShiftSwapLogo/>
                     <Search popOver={true}/>
                     <Search/>
                     <UserMainHeaderMenu user={user}/>
@@ -176,9 +160,6 @@ export default function MainHeader() {
                         <Menu.Dropdown>
                             <Stack>
                                 {dropdownItems}
-                                <div className={classes.dropdownColorSchemeToggle}>
-                                    <ColorSchemeToggle justify={'left'}/>
-                                </div>
                             </Stack>
                         </Menu.Dropdown>
                     </Menu>
