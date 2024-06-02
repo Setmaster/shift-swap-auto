@@ -6,6 +6,7 @@ import classes from './SaleCard.module.css';
 import Link from "next/link";
 import Image from "next/image";
 import CountdownTimer from "@/components/SaleCard/CountdownTimer";
+import SaleImage from "@/components/SaleCard/SaleImage";
 
 type SaleCardData = {
     id: string; // auctionId
@@ -34,7 +35,11 @@ function getTrimMiles(miles: number): string {
 
 function getCurrentPrice(currentHighBid: number, reservePrice: number): string {
     const formatCurrency = (amount: number) => {
-        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(amount);
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 0
+        }).format(amount);
     };
     if (currentHighBid >= reservePrice && (currentHighBid != 0 && reservePrice != 0)) {
         return formatCurrency(currentHighBid);
@@ -42,7 +47,7 @@ function getCurrentPrice(currentHighBid: number, reservePrice: number): string {
     return `${formatCurrency(reservePrice)}`;
 }
 
-export default function SaleCard({ data }: SaleCardProps) {
+export default function SaleCard({data}: SaleCardProps) {
 
     const theme = useMantineTheme();
     return (
@@ -57,18 +62,11 @@ export default function SaleCard({ data }: SaleCardProps) {
         >
             <Card.Section mb="sm">
                 <div className={classes.saleImageContainer}>
-                    <Image
-                        className={classes.saleImage}
-                        src={data.imageUrl}
-                        alt={`${data.year} ${data.make} ${data.model}`}
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        style={{ objectFit: 'cover', objectPosition: 'center' }}
-                    />
+                    <SaleImage data={data}/>
                 </div>
             </Card.Section>
             <Group className={classes.countdown}>
-                <CountdownTimer auctionEnd={data.auctionEnd} />
+                <CountdownTimer auctionEnd={data.auctionEnd}/>
             </Group>
 
             <Text fw={700} className={classes.title} mt="xs">
@@ -91,21 +89,21 @@ export default function SaleCard({ data }: SaleCardProps) {
                     <Group gap={0}>
                         <ActionIcon variant="subtle" color="gray">
                             <IconHeart
-                                style={{ width: rem(20), height: rem(20) }}
+                                style={{width: rem(20), height: rem(20)}}
                                 color={theme.colors.red[6]}
                                 stroke={1.5}
                             />
                         </ActionIcon>
                         <ActionIcon variant="subtle" color="gray">
                             <IconBookmark
-                                style={{ width: rem(20), height: rem(20) }}
+                                style={{width: rem(20), height: rem(20)}}
                                 color={theme.colors.yellow[6]}
                                 stroke={1.5}
                             />
                         </ActionIcon>
                         <ActionIcon variant="subtle" color="gray">
                             <IconShare
-                                style={{ width: rem(20), height: rem(20) }}
+                                style={{width: rem(20), height: rem(20)}}
                                 color={theme.colors.blue[6]}
                                 stroke={1.5}
                             />

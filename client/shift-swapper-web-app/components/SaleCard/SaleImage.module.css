@@ -1,0 +1,4 @@
+﻿.saleImage {
+    width: 100%;
+    transition: transform 500ms ease;
+}
