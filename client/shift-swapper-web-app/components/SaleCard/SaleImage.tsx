@@ -5,23 +5,8 @@ import classes from './SaleImage.module.css';
 import {useState} from "react";
 import {LoadingOverlay} from "@mantine/core";
 
-
-type SaleImageData = {
-    id: string; // auctionId
-    status: string;
-    make: string;
-    model: string;
-    year: number;
-    color: string;
-    mileage: number;
-    imageUrl: string;
-    currentHighBid: number;
-    reservePrice: number;
-    auctionEnd: string;
-};
-
 type SaleImageProps = {
-    data: SaleImageData;
+    data: Auction;
 };
 
 export default function SaleImage({data }: SaleImageProps) {

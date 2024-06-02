@@ -2,7 +2,7 @@
 import {Container, SimpleGrid} from "@mantine/core";
 import classes from './Listings.module.css';
 
-async function getData() {
+async function getData() : Promise<PagedResult<Auction>> {
     const response = await fetch('http://localhost:6001/search?pageSize=10');
 
     if (!response.ok) {
@@ -15,7 +15,7 @@ async function getData() {
 export default async function Listings() {
     const data = await getData();
 
-    const cards = data.results.map((item: any) => {
+    const cards = data.results.map((item: Auction) => {
         return (<SaleCard key={item.id} data={item}/>);
     });
     

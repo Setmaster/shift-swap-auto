@@ -4,26 +4,11 @@ import {ActionIcon, Card, Group, rem, Text, useMantineTheme,} from '@mantine/cor
 import {IconBookmark, IconHeart, IconShare} from '@tabler/icons-react';
 import classes from './SaleCard.module.css';
 import Link from "next/link";
-import Image from "next/image";
 import CountdownTimer from "@/components/SaleCard/CountdownTimer";
 import SaleImage from "@/components/SaleCard/SaleImage";
 
-type SaleCardData = {
-    id: string; // auctionId
-    status: string;
-    make: string;
-    model: string;
-    year: number;
-    color: string;
-    mileage: number;
-    imageUrl: string;
-    currentHighBid: number;
-    reservePrice: number;
-    auctionEnd: string;
-};
-
 type SaleCardProps = {
-    data: SaleCardData;
+    data: Auction;
 };
 
 function getTrimMiles(miles: number): string {
