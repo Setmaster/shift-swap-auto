@@ -7,7 +7,7 @@ import {
     IconCar,
     IconChevronDown,
     IconHeart, IconLogout,
-    IconMessage, IconPlayerPause,
+    IconMessage, IconPlayerPause, IconRadioactive,
     IconSettings,
     IconStar,
     IconSwitchHorizontal, IconTrash, IconTrophy, IconUser
@@ -18,6 +18,8 @@ import {signIn, signOut} from "next-auth/react";
 import {getCurrentUser} from "@/lib/actions/authActions";
 import {getData} from "@/lib/actions/auctionActions";
 import {User} from "next-auth";
+import {redirect} from "next/navigation";
+import {navigate} from "@/lib/actions/userActions";
 
 type UserMainHeaderMenuProps = {
     user: Partial<User> | null;
@@ -79,6 +81,15 @@ export default function UserMainHeaderMenu({user} : UserMainHeaderMenuProps) {
                     leftSection={<IconStar style={{ width: rem(16), height: rem(16) }} color={theme.colors.yellow[6]} stroke={1.5} />}
                 >
                     Saved posts
+                </Menu.Item>
+                <Menu.Item
+                    onClick={()=>{
+
+                        navigate('/devdashboard');
+                    }}
+                    leftSection={<IconRadioactive style={{ width: rem(16), height: rem(16) }} color={theme.colors.green[6]} stroke={1.5} />}
+                >
+                    Dev Dashboard
                 </Menu.Item>
 
                 <Menu.Divider />
