@@ -2,15 +2,16 @@
 
 import SaleCard from "@/components/SaleCard/SaleCard";
 import SaleCardSkeleton from "@/components/SaleCard/SaleCardSkeleton";
-import { Container, Group, SimpleGrid } from "@mantine/core";
+import {Container, Group, SimpleGrid} from "@mantine/core";
 import classes from './Listings.module.css';
 import ListingPagination from "@/components/ListingPagination/ListingPagination";
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import ListingFilters from "@/components/ListingFilters/ListingFilters";
-import { useParamsStore } from "@/lib/hooks/useParamsStore";
-import { shallow } from "zustand/shallow"; // Import the custom hook
+import {useParamsStore} from "@/lib/hooks/useParamsStore";
+import {shallow} from "zustand/shallow"; // Import the custom hook
 import qs from 'query-string';
-import { getData } from "@/lib/actions/auctionActions";
+import {getData} from "@/lib/actions/auctionActions";
+import NoResultsFilterError from "@/components/NoResultsFilterError/NoResultsFilterError";
 
 export default function Listings() {
     const [loading, setLoading] = useState(true);
@@ -21,12 +22,13 @@ export default function Listings() {
             pageSize: state.pageSize,
             searchTerm: state.searchTerm,
             orderBy: state.orderBy,
+            filterBy: state.filterBy,
         }));
     const setParams = useParamsStore((state) => state.setParams);
     const url = qs.stringify(params);
 
     function setActivePage(pageNumber: number) {
-        setParams({ pageNumber });
+        setParams({pageNumber});
     }
 
     useEffect(() => {
@@ -38,19 +40,28 @@ export default function Listings() {
     }, [url]);
 
     const cards = data?.results?.map((item: Auction) => (
-        <SaleCard key={item.id} data={item} />
+        <SaleCard key={item.id} data={item}/>
     )) || [];
 
-    const skeletons = Array.from({ length: params.pageSize }).map((_, index) => (
-        <SaleCardSkeleton key={index} />
+    const skeletons = Array.from({length: params.pageSize}).map((_, index) => (
+        <SaleCardSkeleton key={index}/>
     ));
+
+    if (data?.results?.length === 0 && !loading) {
+        return (
+            <>
+                <ListingFilters/>
+                <NoResultsFilterError/>
+            </>
+        );
+    }
 
     return (
         <>
-                <ListingFilters />
+            <ListingFilters/>
 
             <Container fluid className={classes.listingsContainer}>
-                <SimpleGrid cols={{ base: 1, sm: 2, md: 3, xl: 4 }}>
+                <SimpleGrid cols={{base: 1, sm: 2, md: 3, xl: 4}}>
                     {loading ? skeletons : cards}
                 </SimpleGrid>
             </Container>
