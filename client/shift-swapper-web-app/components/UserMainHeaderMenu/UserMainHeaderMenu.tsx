@@ -1,33 +1,49 @@
 ﻿'use client';
 
-import {Anchor, Button, Group, Menu, rem, Text, UnstyledButton, useMantineTheme} from "@mantine/core";
+import {Button, Group, Menu, rem, Text, UnstyledButton, useMantineTheme} from "@mantine/core";
 import cx from "clsx";
 import classes from "./UserMainHeaderMenu.module.css";
 import {
     IconCar,
     IconChevronDown,
-    IconHeart, IconLogout,
-    IconMessage, IconPlayerPause, IconRadioactive,
-    IconSettings,
+    IconLogout,
+    IconRadioactive,
     IconStar,
-    IconSwitchHorizontal, IconTrash, IconTrophy, IconUser
+    IconTrophy,
+    IconUser
 } from "@tabler/icons-react";
 import ColorSchemeToggle from "@/components/ColorSchemeToggle/ColorSchemeToggle";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {signIn, signOut} from "next-auth/react";
-import {getCurrentUser} from "@/lib/actions/authActions";
-import {getData} from "@/lib/actions/auctionActions";
 import {User} from "next-auth";
-import {redirect} from "next/navigation";
-import {navigate} from "@/lib/actions/userActions";
+import {usePathname, useRouter} from "next/navigation";
 import Link from "next/link";
+import {useParamsStore} from "@/lib/hooks/useParamsStore";
 
 type UserMainHeaderMenuProps = {
-    user: Partial<User> | null;
+    user: User
 }
 export default function UserMainHeaderMenu({user} : UserMainHeaderMenuProps) {
     const theme = useMantineTheme();
     const [userMenuOpened, setUserMenuOpened] = useState(false);
+    
+    const router = useRouter();
+    const pathname = usePathname();
+    const setParams = useParamsStore((state) => state.setParams);
+    
+    function setWinner(){
+        setParams({winner: user.username, seller: undefined});
+        if(pathname !== '/'){
+            router.push('/');
+        }
+    }
+
+    function setSeller(){
+        setParams({seller: user.username, winner: undefined});
+        if(pathname !== '/'){
+            router.push('/');
+        }
+    }
     
     const handleLogin = () => {
         signIn('id-server', {callbackUrl: '/'})
@@ -64,11 +80,13 @@ export default function UserMainHeaderMenu({user} : UserMainHeaderMenuProps) {
             </Menu.Target>
             <Menu.Dropdown>
                 <Menu.Item
+                    onClick={setSeller}
                     leftSection={<IconUser style={{ width: rem(16), height: rem(16) }} color={theme.colors.green[6]} stroke={1.5} />}
                 >
                     My Auctions
                 </Menu.Item>
                 <Menu.Item
+                    onClick={setWinner}
                     leftSection={<IconTrophy style={{ width: rem(16), height: rem(16) }} color={theme.colors.yellow[6]} stroke={1.5} />}
                 >
                     Auctions won
