@@ -1,7 +1,7 @@
-﻿export default function AuctionCreatePage() {
+﻿import AuctionForm from "@/components/AuctionForm/AuctionForm";
+
+export default function AuctionCreatePage() {
     return (
-        <div>
-            <h1>Create</h1>
-        </div>
+        <AuctionForm/>
     )
 }

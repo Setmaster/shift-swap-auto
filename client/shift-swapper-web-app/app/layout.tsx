@@ -1,6 +1,8 @@
 import './globals.css'
 import '@mantine/core/styles.css';
 import '@mantine/carousel/styles.css';
+import '@mantine/dates/styles.css';
+import '@mantine/dropzone/styles.css';
 import { ColorSchemeScript, MantineProvider } from '@mantine/core';
 import MainHeader from "@/components/MainHeader/MainHeader";
 import { theme } from '@/theme';
