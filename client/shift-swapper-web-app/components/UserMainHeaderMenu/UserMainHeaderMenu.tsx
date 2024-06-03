@@ -20,6 +20,7 @@ import {getData} from "@/lib/actions/auctionActions";
 import {User} from "next-auth";
 import {redirect} from "next/navigation";
 import {navigate} from "@/lib/actions/userActions";
+import Link from "next/link";
 
 type UserMainHeaderMenuProps = {
     user: Partial<User> | null;
@@ -73,6 +74,8 @@ export default function UserMainHeaderMenu({user} : UserMainHeaderMenuProps) {
                     Auctions won
                 </Menu.Item>
                 <Menu.Item
+                    component={Link}
+                    href={"/auctions/create"}
                     leftSection={<IconCar style={{ width: rem(16), height: rem(16) }} color={theme.colors.blue[6]} stroke={1.5} />}
                 >
                     Sell my vehicle
@@ -83,10 +86,8 @@ export default function UserMainHeaderMenu({user} : UserMainHeaderMenuProps) {
                     Saved posts
                 </Menu.Item>
                 <Menu.Item
-                    onClick={()=>{
-
-                        navigate('/devdashboard');
-                    }}
+                    component={Link}
+                    href={"/devdashboard"}
                     leftSection={<IconRadioactive style={{ width: rem(16), height: rem(16) }} color={theme.colors.green[6]} stroke={1.5} />}
                 >
                     Dev Dashboard

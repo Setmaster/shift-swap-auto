@@ -42,7 +42,7 @@ export default function SaleCard({data}: SaleCardProps) {
             radius="md"
             className={classes.card}
             component={Link}
-            href={``}
+            href={`/auctions/details/${data.id}`}
             target="_self"
         >
             <Card.Section mb="sm">
