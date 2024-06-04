@@ -34,3 +34,25 @@ type LinkItem = {
     label: string;
     links?: LinkItem[];
 }
+
+type AuctionFormValues = {
+    make: string;
+    model: string;
+    color: string;
+    year: string;
+    mileage: string;
+    reservePrice: string;
+    endDateTime: string | null;
+    image: File | null;
+};
+
+type ValidatedAuctionFormValues = {
+    make: string;
+    model: string;
+    color: string;
+    year: number;
+    mileage: number;
+    reservePrice: number;
+    auctionEnd: string;
+    imageUrl: string;
+}

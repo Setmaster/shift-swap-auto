@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.588.0",
     "@mantine/carousel": "^7.10.0",
     "@mantine/charts": "^7.10.0",
     "@mantine/code-highlight": "^7.10.0",
@@ -37,6 +38,8 @@
     "react-countdown": "^2.3.5",
     "react-dom": "^18",
     "recharts": "^2.12.7",
+    "xss": "^1.0.15",
+    "zod": "^3.23.8",
     "zustand": "^4.5.2"
   },
   "devDependencies": {

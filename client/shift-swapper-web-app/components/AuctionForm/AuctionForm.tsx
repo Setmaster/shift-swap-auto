@@ -8,9 +8,10 @@ import {useState} from "react";
 import classes from './AuctionForm.module.css';
 import {DateTimePicker} from "@mantine/dates";
 import dayjs from 'dayjs';
+import {createAuction} from "@/lib/actions/auctionActions";
 
 export default function AuctionForm() {
-    const form = useForm({
+    const form = useForm<AuctionFormValues>({
         initialValues: {
             make: '',
             model: '',
@@ -94,7 +95,7 @@ export default function AuctionForm() {
 
         setSubmitting(true);
 
-        // await shareAuction(formData);
+        await createAuction(formData);
     };
 
     return (
