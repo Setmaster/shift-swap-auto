@@ -42,7 +42,7 @@ type AuctionFormValues = {
     year: string;
     mileage: string;
     reservePrice: string;
-    endDateTime: string | null;
+    endDateTime: string;
     image: File | null;
 };
 
@@ -55,4 +55,11 @@ type ValidatedAuctionFormValues = {
     reservePrice: number;
     auctionEnd: string;
     imageUrl: string;
+}
+
+type AuctionError = {
+    error: {
+        status: string | number;
+        message: string;
+    };
 }

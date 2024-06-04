@@ -28,27 +28,32 @@ export async function getUpdatedAuctionTest() {
 }
 
 export async function createAuction(formData: FormData) {
-
     // Convert FormData to plain object
     const data: any = {};
     formData.forEach((value, key) => {
         data[key] = value;
     });
 
-    const validatedData = await validateAuctionData(data);
+    const { errors, validatedData } = await validateAuctionData(data);
 
-    // If there's an image, upload it and update the imageUrl
-    if (data.image) {
-        const imageUrl = await uploadImage(data.image);
-        validatedData.imageUrl = imageUrl;
+    if (errors) {
+        return { errors };
     }
+    
+    if (validatedData) {
+        // If there's an image, upload it and update the imageUrl
+        if (data.image) {
+            const imageUrl = await uploadImage(data.image);
+            validatedData.imageUrl = imageUrl;
+        }
 
-    // Send the validated and sanitized data to the server
-    await fetchWrapper.post('auctions', validatedData);
+        // Send the validated and sanitized data to the server
+        const response = await fetchWrapper.post('auctions', validatedData);
 
-    revalidatePath('/');
-    redirect('/');
+        return response;
+    }
 }
+
 
 async function uploadImage(image: File) {
     const fileName: string = randomUUID();

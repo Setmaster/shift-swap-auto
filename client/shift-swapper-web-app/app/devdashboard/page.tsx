@@ -38,6 +38,7 @@ export default function DevDashboard() {
         setLoading(true);
         try {
             setResult(await updateAuctionTest());
+            console.log('RESULT:', result);
             await handleUpdateAuction();  // this will trigger the re-fetch of the updatedAuction data
         } finally {
             setLoading(false);

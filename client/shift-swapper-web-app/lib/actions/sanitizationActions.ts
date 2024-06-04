@@ -33,8 +33,7 @@ const ValidatedAuctionFormValuesSchema = z.object({
     imageUrl: z.string(),
 });
 
-
-export async function validateAuctionData(data: any): Promise<ValidatedAuctionFormValues> {
+export async function validateAuctionData(data: AuctionFormValues): Promise<{ errors?: any[], validatedData?: ValidatedAuctionFormValues }> {
     // Sanitize the input data to prevent XSS
     const sanitizedData = {
         make: xss(data.make),
@@ -44,22 +43,33 @@ export async function validateAuctionData(data: any): Promise<ValidatedAuctionFo
         mileage: xss(data.mileage),
         reservePrice: xss(data.reservePrice),
         endDateTime: xss(data.endDateTime),
-        image: data.image, // File objects don't need XSS sanitization
+        image: data.image // File objects don't need XSS sanitization
     };
 
-    // Validate and parse the sanitized data
-    const parsedData = AuctionFormValuesSchema.parse(sanitizedData);
+    try {
+        // Validate and parse the sanitized data
+        const parsedData = AuctionFormValuesSchema.parse(sanitizedData);
 
-    // Convert string values to numbers where necessary
-    const finalData = {
-        ...parsedData,
-        year: parseInt(parsedData.year, 10),
-        mileage: parseInt(parsedData.mileage, 10),
-        reservePrice: parseInt(parsedData.reservePrice, 10),
-        auctionEnd: parsedData.endDateTime,
-        imageUrl: '',  // This will be filled after image upload
-    };
+        // Convert string values to numbers where necessary
+        const finalData = {
+            ...parsedData,
+            year: parseInt(parsedData.year, 10),
+            mileage: parseInt(parsedData.mileage, 10),
+            reservePrice: parseInt(parsedData.reservePrice, 10),
+            auctionEnd: parsedData.endDateTime,
+            imageUrl: '',  // This will be filled after image upload
+        };
 
-    // Validate the final data to ensure it matches the expected structure
-    return ValidatedAuctionFormValuesSchema.parse(finalData);
+        // Validate the final data to ensure it matches the expected structure
+        const validatedData = ValidatedAuctionFormValuesSchema.parse(finalData);
+
+        return { validatedData };
+    } catch (error: any) {
+        const errors = error.errors?.map((err: any) => ({
+            status: err.path,
+            message: err.message
+        })) || [{ status: 'Unknown',message: 'An unknown error occurred' }];
+
+        return { errors };
+    }
 }

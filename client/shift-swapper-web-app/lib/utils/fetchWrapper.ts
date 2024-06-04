@@ -1,5 +1,5 @@
-﻿import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { getTokenWorkaround } from "@/lib/actions/authActions";
+﻿import axios, {AxiosRequestConfig, AxiosResponse} from 'axios';
+import {getTokenWorkaround} from "@/lib/actions/authActions";
 
 const baseUrl = process.env.API_URL;
 
@@ -8,7 +8,7 @@ const baseUrl = process.env.API_URL;
  */
 async function getHeaders() {
     const token = await getTokenWorkaround();
-    const headers: any = { 'Content-type': 'application/json' };
+    const headers: any = {'Content-type': 'application/json'};
 
     if (token) {
         headers.Authorization = 'Bearer ' + token.access_token;
@@ -22,9 +22,11 @@ async function getHeaders() {
  * @param {string} method - The HTTP method (GET, POST, PUT, DELETE).
  */
 async function handleResponse(response: AxiosResponse, method: string) {
-    console.log("response: ", response);
     if (method === 'GET') {
         return response.data;
+    }
+    if (method === 'POST') {
+        return {message: response.statusText, id: response.data.id};
     } else {
         return response.statusText;
     }
@@ -38,7 +40,7 @@ async function handleResponse(response: AxiosResponse, method: string) {
 async function handleError(error: any) {
     const response = error.response;
     const message = response?.data?.errors || response?.data || response?.statusText || "An error occurred";
-    return { status: response?.status, message };
+    return {errors: [{error: {status: response?.status, message}}]};
 }
 
 /**

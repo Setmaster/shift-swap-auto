@@ -1,17 +1,19 @@
 ﻿'use client';
 
-import {Container, Flex, Group, SimpleGrid, TextInput, Title} from '@mantine/core';
+import {Container, Flex, SimpleGrid, TextInput, Title} from '@mantine/core';
 import {useForm} from '@mantine/form';
-import ImageDropzone from "@/components/AuctionForm/ImageDropzone";
-import AuctionFormSubmitButton from "@/components/AuctionForm/AuctionFormSubmitButton";
-import {useState} from "react";
-import classes from './AuctionForm.module.css';
-import {DateTimePicker} from "@mantine/dates";
+import {useState} from 'react';
+import {DateTimePicker} from '@mantine/dates';
 import dayjs from 'dayjs';
 import {createAuction} from "@/lib/actions/auctionActions";
+import {router} from 'next/client';
+import {notifications} from '@mantine/notifications';
+import ImageDropzone from '@/components/AuctionForm/ImageDropzone';
+import AuctionFormSubmitButton from '@/components/AuctionForm/AuctionFormSubmitButton';
+import classes from './AuctionForm.module.css';
 
 export default function AuctionForm() {
-    const form = useForm<AuctionFormValues>({
+    const form = useForm({
         initialValues: {
             make: '',
             model: '',
@@ -20,10 +22,10 @@ export default function AuctionForm() {
             mileage: '',
             reservePrice: '',
             endDateTime: null,
-            image: null, // Initialized for a single image file
+            image: null,
         },
         validate: {
-            make: (value) => (value.trim().length < 2 ? 'Name must be at least 2 characters' : null),
+            make: (value) => (value.trim().length < 2 ? 'Make must be at least 2 characters' : null),
             model: (value) => (value.trim().length < 2 ? 'Model must be at least 2 characters' : null),
             color: (value) => (value.trim().length < 2 ? 'Color must be at least 2 characters' : null),
             year: (value) => {
@@ -55,7 +57,7 @@ export default function AuctionForm() {
             },
             endDateTime: (value) => {
                 if (!value) {
-                    return 'End date and time is required';
+                    return 'End date and time are required';
                 }
                 const now = dayjs();
                 const selectedDate = dayjs(value);
@@ -68,7 +70,6 @@ export default function AuctionForm() {
                 return null;
             },
         },
-
     });
 
     const [submitting, setSubmitting] = useState(false);
@@ -80,22 +81,31 @@ export default function AuctionForm() {
             return;
         }
 
-        // Create a FormData object
         const formData = new FormData();
-
-        // Append all form fields to the FormData object
-        formData.append('make', values.make);
-        formData.append('model', values.model);
-        formData.append('color', values.color);
-        formData.append('year', values.year);
-        formData.append('mileage', values.mileage);
-        formData.append('reservePrice', values.reservePrice);
+        Object.keys(values).forEach((key) => {
+            formData.append(key, values[key]);
+        });
         formData.append('endDateTime', values.endDateTime.toISOString());
-        formData.append('image', values.image);
 
         setSubmitting(true);
 
-        await createAuction(formData);
+        const response = await createAuction(formData);
+
+        setSubmitting(false);
+
+        if (response?.errors) {
+            response.errors.map((err: AuctionError) => {
+
+                notifications.show({
+                    title: 'Form Submission Error',
+                    message: `${err.error.status}: ${err.error.message}`,
+                    color: 'red',
+                })
+            });
+
+        } else {
+            router.push(`/auctions/${response.id}`);
+        }
     };
 
     return (
@@ -172,8 +182,7 @@ export default function AuctionForm() {
                     wrap="wrap"
                     className={classes.buttonsContainer}
                 >
-                    
-                    <ImageDropzone form={form} emptyError={imageError} setImageError={setImageError} />
+                    <ImageDropzone form={form} emptyError={imageError} setImageError={setImageError}/>
                     <AuctionFormSubmitButton pending={submitting}/>
                 </Flex>
             </form>
