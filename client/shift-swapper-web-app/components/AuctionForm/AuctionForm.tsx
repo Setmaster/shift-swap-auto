@@ -73,7 +73,7 @@ export default function AuctionForm() {
     const [submitting, setSubmitting] = useState(false);
     const [imageError, setImageError] = useState(false);
 
-    const submitHandler = async (values) => {
+    const submitHandler = async (values: any) => {
         if (!values.image) {
             setImageError(true);
             return;
@@ -98,7 +98,7 @@ export default function AuctionForm() {
     };
 
     return (
-        <Container>
+        <Container className={classes.formContainer}>
             <form onSubmit={form.onSubmit(submitHandler)}>
                 <Title
                     order={2}
@@ -171,6 +171,7 @@ export default function AuctionForm() {
                     wrap="wrap"
                     className={classes.buttonsContainer}
                 >
+                    
                     <ImageDropzone form={form} emptyError={imageError} setImageError={setImageError} />
                     <AuctionFormSubmitButton pending={submitting}/>
                 </Flex>

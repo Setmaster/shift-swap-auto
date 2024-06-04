@@ -1,29 +1,19 @@
-﻿'use client'
+﻿import React from 'react';
+import {Button, Group, Text} from "@mantine/core";
 
-import React, { useState } from 'react'
-import {updateAuctionTest} from "@/lib/actions/auctionActions";
-import {Button} from "@mantine/core";
-export default function AuthTests() {
-    const [loading, setLoading] = useState(false);
-    const [result, setResult] = useState<any>();
+type AuthTestsProps = {
+    loading: boolean;
+    result: any;
+    doUpdate: () => void;
+};
 
-    function doUpdate() {
-        setResult(undefined);
-        setLoading(true);
-        updateAuctionTest()
-            .then(res => setResult(res))
-            .finally(() => setLoading(false))
-
-    }
-
+export default function AuthTests({ loading, result, doUpdate }: AuthTestsProps) {
     return (
-        <div >
+        <Group>
             <Button loading={loading} loaderProps={{ type: 'dots' }} onClick={doUpdate}>
                 Test auth
             </Button>
-            <div>
-                {JSON.stringify(result, null, 2)}
-            </div>
-        </div>
-    )
+            <Text>{JSON.stringify(result, null, 2)}</Text>
+        </Group>
+    );
 }

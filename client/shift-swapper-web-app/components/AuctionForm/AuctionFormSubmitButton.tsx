@@ -5,7 +5,7 @@ export default function ShareContraptionFormSubmitButton({pending} : {pending: b
     
     return (
         <Button disabled={pending} type="submit" size="md">
-            {pending ? 'Submitting...' : 'Share Contraption'}
+            {pending ? 'Submitting...' : 'Submit Auction'}
         </Button>
     );
 }

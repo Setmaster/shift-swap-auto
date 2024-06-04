@@ -5,3 +5,8 @@
 .dateInput{
     margin-top: rem(20px);
 }
+
+.formContainer{
+    /*width: 80%*/
+    margin-bottom: rem(20px);
+}
