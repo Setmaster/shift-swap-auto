@@ -2,7 +2,7 @@
 
 import {Container, Flex, SimpleGrid, TextInput, Title, Button} from '@mantine/core';
 import {useForm} from '@mantine/form';
-import {useState, useEffect} from 'react';
+import {useState} from 'react';
 import {DateTimePicker} from '@mantine/dates';
 import dayjs from 'dayjs';
 import {createAuction, deleteAuction, updateAuction} from "@/lib/actions/auctionActions";
@@ -11,7 +11,6 @@ import {notifications} from '@mantine/notifications';
 import ImageDropzone from '@/components/AuctionForm/ImageDropzone';
 import AuctionFormSubmitButton from '@/components/AuctionForm/AuctionFormSubmitButton';
 import classes from './AuctionForm.module.css';
-import {revalidatePath} from "next/cache";
 
 type AuctionFormProps = {
     mode?: 'create' | 'update';
@@ -94,7 +93,8 @@ export default function AuctionForm({mode = 'create', auctionId, initialAuctionD
 
     const [submitting, setSubmitting] = useState(false);
     const [imageError, setImageError] = useState(false);
-    
+    const [clickedButton, setClickedButton] = useState<string | null>(null);
+    const [deleting, setDeleting] = useState(false);
     const submitHandler = async (values: any) => {
         if (mode === 'create' && !values.image) {
             setImageError(true);
@@ -113,6 +113,7 @@ export default function AuctionForm({mode = 'create', auctionId, initialAuctionD
         }
 
         setSubmitting(true);
+        setClickedButton('submit');
 
         const response = mode === 'create' ? await createAuction(formData) : await updateAuction(formData);
 
@@ -136,14 +137,17 @@ export default function AuctionForm({mode = 'create', auctionId, initialAuctionD
     };
 
     const handleCancel = () => {
+        setClickedButton('cancel');
         if (mode === 'update') {
             router.push(`/auctions/details/${auctionId}`);
         } else {
             router.push('/');
         }
     };
-    
+
     const handleDelete = async () => {
+        setClickedButton('delete');
+        setDeleting(true);
         const response = await deleteAuction(auctionId!, imageUrl!);
         if (response?.errors) {
             response.errors.map((err: AuctionError) => {
@@ -153,10 +157,11 @@ export default function AuctionForm({mode = 'create', auctionId, initialAuctionD
                     color: 'red',
                 });
             });
+            setDeleting(false);
         } else {
             router.push('/');
         }
-    }
+    };
 
     return (
         <Container className={classes.formContainer}>
@@ -245,17 +250,25 @@ export default function AuctionForm({mode = 'create', auctionId, initialAuctionD
                     className={classes.buttonsContainer}
                 >
                     {mode === 'update' && (
-                        <Button onClick={handleDelete} size="md" variant="outline">
+                        <Button
+                            onClick={handleDelete}
+                            size="md"
+                            variant="filled"
+                            disabled={clickedButton === 'submit' || clickedButton === 'cancel'}
+                            loading={deleting}
+                            loaderProps={{ type: 'dots' }}
+                            color={"#870000"}
+                        >
                             Delete
                         </Button>
                     )}
-                    <Button onClick={handleCancel} size="md" variant="outline">
+                    <Button onClick={handleCancel} size="md" variant="filled" disabled={clickedButton === 'submit' || clickedButton === 'delete'} color={"#870000"}>
                         Cancel
                     </Button>
                     {mode === 'create' && (
                         <ImageDropzone form={form} emptyError={imageError} setImageError={setImageError}/>
                     )}
-                    <AuctionFormSubmitButton pending={submitting}/>
+                    <AuctionFormSubmitButton pending={submitting} disabled={clickedButton === 'delete'}/>
                 </Flex>
             </form>
         </Container>
