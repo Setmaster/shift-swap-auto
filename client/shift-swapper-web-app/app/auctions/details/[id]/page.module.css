@@ -1,0 +1,17 @@
+﻿.saleImageContainer {
+    width: 100%;
+    height: rem(360px);
+    @media (max-width: em(585px)) {
+        height: rem(180px);
+    }
+    @media (max-width: em(290px)) {
+        height: rem(90px);
+    }
+    overflow: hidden;
+    position: relative;
+    border-radius: var(--mantine-radius-md);
+}
+
+.leftSideContainer{
+    width: 100%;
+}

@@ -6,6 +6,7 @@ import classes from './SaleCard.module.css';
 import Link from "next/link";
 import CountdownTimer from "@/components/SaleCard/CountdownTimer";
 import SaleImage from "@/components/SaleCard/SaleImage";
+import {formatCurrency} from "@/lib/utils/generalUtils";
 
 type SaleCardProps = {
     data: Auction;
@@ -19,13 +20,7 @@ function getTrimMiles(miles: number): string {
 }
 
 function getCurrentPrice(currentHighBid: number, reservePrice: number): string {
-    const formatCurrency = (amount: number) => {
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 0
-        }).format(amount);
-    };
+
     if (currentHighBid >= reservePrice && (currentHighBid != 0 && reservePrice != 0)) {
         return formatCurrency(currentHighBid);
     }
