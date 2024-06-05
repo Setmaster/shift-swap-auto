@@ -5,12 +5,15 @@ import {Autocomplete, Button, Group, Popover, rem} from "@mantine/core";
 import classes from "./Search.module.css";
 import {IconSearch} from "@tabler/icons-react";
 import {useParamsStore} from "@/lib/hooks/useParamsStore";
+import {usePathname, useRouter} from "next/navigation";
 
 type SearchProps = {
     popOver?: boolean;
 };
 
 export default function Search({popOver: popover = false}) {
+    const router = useRouter();
+    const pathName = usePathname();
     const setParams = useParamsStore(state => state.setParams);
     const setSearchValue = useParamsStore(state => state.setSearchValue);
     const searchValue = useParamsStore(state => state.searchValue);
@@ -19,6 +22,7 @@ export default function Search({popOver: popover = false}) {
     }
     
     function search(){
+        if(pathName !== '/') router.push('/');
         setParams({searchTerm: searchValue});
     }
     
