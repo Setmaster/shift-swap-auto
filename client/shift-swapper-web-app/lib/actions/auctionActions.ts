@@ -3,7 +3,7 @@
 import {fetchWrapper} from "@/lib/utils/fetchWrapper";
 import {S3} from '@aws-sdk/client-s3';
 import {randomUUID} from "node:crypto";
-import {validateAuctionData} from "@/lib/actions/sanitizationActions";
+import {validateAuctionData, validateUpdateAuctionData} from "@/lib/actions/sanitizationActions";
 import {revalidatePath} from "next/cache";
 import {redirect} from "next/navigation";
 
@@ -53,11 +53,41 @@ export async function createAuction(formData: FormData) {
 
         // Send the validated and sanitized data to the server
         const response = await fetchWrapper.post('auctions', validatedData);
-
+        revalidatePath('/');
         return response;
     }
 }
 
+export async function updateAuction(formData: FormData) {
+    // Convert FormData to plain object
+    const data: any = {};
+    formData.forEach((value, key) => {
+        data[key] = value;
+    });
+
+    // Validate the data
+    const { errors, validatedData } = await validateUpdateAuctionData(data);
+
+    if (errors) {
+        return { errors };
+    }
+
+    if (validatedData) {
+
+        const updateData = {
+            make: validatedData.make,
+            model: validatedData.model,
+            year: validatedData.year,
+            color: validatedData.color,
+            mileage: validatedData.mileage,
+        }
+        
+        // Send the validated and sanitized data to the server
+        const response = await fetchWrapper.put(`auctions/${data.id}`, updateData);
+        revalidatePath('/');
+        return response;
+    }
+}
 
 async function uploadImage(image: File) {
     const fileName: string = randomUUID();

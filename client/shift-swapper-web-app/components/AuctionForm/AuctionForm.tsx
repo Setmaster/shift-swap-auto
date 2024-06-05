@@ -1,25 +1,42 @@
 ﻿'use client';
 
-import {Container, Flex, SimpleGrid, TextInput, Title} from '@mantine/core';
+import {Container, Flex, SimpleGrid, TextInput, Title, Button} from '@mantine/core';
 import {useForm} from '@mantine/form';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {DateTimePicker} from '@mantine/dates';
 import dayjs from 'dayjs';
-import {createAuction} from "@/lib/actions/auctionActions";
-import {router} from 'next/client';
+import {createAuction, updateAuction} from "@/lib/actions/auctionActions";
+import {useRouter} from 'next/navigation';
 import {notifications} from '@mantine/notifications';
 import ImageDropzone from '@/components/AuctionForm/ImageDropzone';
 import AuctionFormSubmitButton from '@/components/AuctionForm/AuctionFormSubmitButton';
 import classes from './AuctionForm.module.css';
+import {revalidatePath} from "next/cache";
 
-export default function AuctionForm() {
+type AuctionFormProps = {
+    mode?: 'create' | 'update';
+    auctionId?: string;
+    initialAuctionData?: {
+        make: string;
+        model: string;
+        color: string;
+        year: string;
+        mileage: string;
+        reservePrice?: string;
+        endDateTime?: string;
+        image?: string;
+    };
+};
+
+export default function AuctionForm({mode = 'create', auctionId, initialAuctionData}: AuctionFormProps) {
+    const router = useRouter();
     const form = useForm({
         initialValues: {
-            make: '',
-            model: '',
-            color: '',
-            year: '',
-            mileage: '',
+            make: mode === 'update' ? initialAuctionData!.make : '',
+            model: mode === 'update' ? initialAuctionData!.model : '',
+            color: mode === 'update' ? initialAuctionData!.color : '',
+            year: mode === 'update' ? initialAuctionData!.year : '',
+            mileage: mode === 'update' ? initialAuctionData!.mileage : '',
             reservePrice: '',
             endDateTime: null,
             image: null,
@@ -46,37 +63,39 @@ export default function AuctionForm() {
                 }
                 return null;
             },
-            reservePrice: (value) => {
-                if (!/^\d+$/.test(value.trim())) {
-                    return 'Reserve price must be a number';
-                }
-                if (value.trim().length < 1) {
-                    return 'Reserve price must be at least 1 character';
-                }
-                return null;
-            },
-            endDateTime: (value) => {
-                if (!value) {
-                    return 'End date and time are required';
-                }
-                const now = dayjs();
-                const selectedDate = dayjs(value);
-                if (!selectedDate.isValid() || selectedDate.format('YYYY-MM-DD HH:mm') === 'Invalid Date') {
-                    return 'Please select a valid date and time';
-                }
-                if (selectedDate.isBefore(now.add(24, 'hour'))) {
-                    return 'End date and time must be at least 24 hours in the future';
-                }
-                return null;
-            },
+            ...(mode === 'create' && {
+                reservePrice: (value) => {
+                    if (!/^\d+$/.test(value.trim())) {
+                        return 'Reserve price must be a number';
+                    }
+                    if (value.trim().length < 1) {
+                        return 'Reserve price must be at least 1 character';
+                    }
+                    return null;
+                },
+                endDateTime: (value) => {
+                    if (!value) {
+                        return 'End date and time are required';
+                    }
+                    const now = dayjs();
+                    const selectedDate = dayjs(value);
+                    if (!selectedDate.isValid() || selectedDate.format('YYYY-MM-DD HH:mm') === 'Invalid Date') {
+                        return 'Please select a valid date and time';
+                    }
+                    if (selectedDate.isBefore(now.add(24, 'hour'))) {
+                        return 'End date and time must be at least 24 hours in the future';
+                    }
+                    return null;
+                },
+            }),
         },
     });
 
     const [submitting, setSubmitting] = useState(false);
     const [imageError, setImageError] = useState(false);
-
+    
     const submitHandler = async (values: any) => {
-        if (!values.image) {
+        if (mode === 'create' && !values.image) {
             setImageError(true);
             return;
         }
@@ -85,26 +104,41 @@ export default function AuctionForm() {
         Object.keys(values).forEach((key) => {
             formData.append(key, values[key]);
         });
-        formData.append('endDateTime', values.endDateTime.toISOString());
+
+        if (mode === 'create') {
+            formData.append('endDateTime', values.endDateTime.toISOString());
+        } else {
+            formData.append('id', auctionId!);
+        }
 
         setSubmitting(true);
 
-        const response = await createAuction(formData);
-
-        setSubmitting(false);
+        const response = mode === 'create' ? await createAuction(formData) : await updateAuction(formData);
 
         if (response?.errors) {
             response.errors.map((err: AuctionError) => {
-
                 notifications.show({
                     title: 'Form Submission Error',
                     message: `${err.error.status}: ${err.error.message}`,
                     color: 'red',
-                })
+                });
             });
-
         } else {
-            router.push(`/auctions/${response.id}`);
+            if (mode === 'create') {
+                router.push(`/auctions/details/${response.id}`);
+            }
+            if (mode === 'update') {
+                router.push(`/auctions/details/${auctionId}`);
+            }
+        }
+        setSubmitting(false);
+    };
+
+    const handleCancel = () => {
+        if (mode === 'update') {
+            router.push(`/auctions/details/${auctionId}`);
+        } else {
+            router.push('/');
         }
     };
 
@@ -118,7 +152,7 @@ export default function AuctionForm() {
                     fw={900}
                     ta="center"
                 >
-                    Sell your vehicle today
+                    {mode === 'create' ? 'Sell your vehicle today' : 'Update Auction'}
                 </Title>
 
                 <SimpleGrid cols={{base: 1, sm: 2}} mt="xl">
@@ -150,28 +184,40 @@ export default function AuctionForm() {
                     />
                 </SimpleGrid>
 
-                <SimpleGrid cols={{base: 1, sm: 2}} mt="xl">
+                {mode === 'update' && (
                     <TextInput
                         label="Mileage"
                         placeholder="Your vehicle mileage"
                         {...form.getInputProps('mileage')}
                         variant="filled"
                     />
-                    <TextInput
-                        label="Reserve Price"
-                        placeholder="Minimum price you will accept for your vehicle"
-                        {...form.getInputProps('reservePrice')}
-                        variant="filled"
-                    />
-                </SimpleGrid>
+                )}
+                {mode === 'create' && (
+                    <SimpleGrid cols={{base: 1, sm: 2}} mt="xl">
+                        <TextInput
+                            label="Mileage"
+                            placeholder="Your vehicle mileage"
+                            {...form.getInputProps('mileage')}
+                            variant="filled"
+                        />
+                        <TextInput
+                            label="Reserve Price"
+                            placeholder="Minimum price you will accept for your vehicle"
+                            {...form.getInputProps('reservePrice')}
+                            variant="filled"
+                        />
+                    </SimpleGrid>
+                )}
 
-                <DateTimePicker
-                    className={classes.dateInput}
-                    variant="filled"
-                    label="Auction End Date"
-                    placeholder="Pick date and time"
-                    {...form.getInputProps('endDateTime')}
-                />
+                {mode === 'create' && (
+                    <DateTimePicker
+                        className={classes.dateInput}
+                        variant="filled"
+                        label="Auction End Date"
+                        placeholder="Pick date and time"
+                        {...form.getInputProps('endDateTime')}
+                    />
+                )}
 
                 <Flex
                     mih={50}
@@ -182,7 +228,12 @@ export default function AuctionForm() {
                     wrap="wrap"
                     className={classes.buttonsContainer}
                 >
-                    <ImageDropzone form={form} emptyError={imageError} setImageError={setImageError}/>
+                    <Button onClick={handleCancel} size="md" variant="outline">
+                        Cancel
+                    </Button>
+                    {mode === 'create' && (
+                        <ImageDropzone form={form} emptyError={imageError} setImageError={setImageError}/>
+                    )}
                     <AuctionFormSubmitButton pending={submitting}/>
                 </Flex>
             </form>

@@ -1,9 +1,11 @@
 ﻿import {getAuction} from "@/lib/actions/auctionActions";
-import {Container, Group, SimpleGrid, Stack, Text} from "@mantine/core";
+import {Button, Container, Group, rem, SimpleGrid, Stack, Text, useMantineTheme} from "@mantine/core";
 import SaleImage from "@/components/SaleCard/SaleImage";
 import classes from './page.module.css';
 import CountdownTimer from "@/components/SaleCard/CountdownTimer";
 import SpecsTable from "@/components/SpecsTable/SpecsTable";
+import {IconEdit} from "@tabler/icons-react";
+import AuctionEditButton from "@/components/Buttons/AuctionEditButton";
 
 export default async function AuctionDetailsPage({params}: { params: { id: string } }) {
     const data = await getAuction(params.id);
@@ -14,12 +16,15 @@ export default async function AuctionDetailsPage({params}: { params: { id: strin
                 <SimpleGrid cols={{base: 1, md: 2}}>
                     <Container className={classes.leftSideContainer}>
                         <Stack>
-                            <Text
-                                size={'xl'}
-                                fw={700}
-                            >
-                                {data.make + ' ' + data.model}
-                            </Text>
+                            <Group>
+                                <Text
+                                    size={'xl'}
+                                    fw={700}
+                                >
+                                    {data.make + ' ' + data.model}
+                                </Text>
+                                <AuctionEditButton auctionId={params.id}/>
+                            </Group>
                             <Container className={classes.saleImageContainer}>
                                 <SaleImage data={data}/>
                             </Container>

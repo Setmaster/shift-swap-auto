@@ -1,7 +1,20 @@
-﻿export default function UpdateAuctionPage({params}: {params: {id: string}}) {
+﻿import { getAuction } from "@/lib/actions/auctionActions";
+import AuctionForm from "@/components/AuctionForm/AuctionForm";
+
+export default async function AuctionUpdatePage({ params }: { params: { id: string } }) {
+    const data = await getAuction(params.id);
+
     return (
-        <div>
-            <h1>Update for {params.id}</h1>
-        </div>
+        <AuctionForm
+            mode="update"
+            auctionId={params.id}
+            initialAuctionData={{
+                make: data.make,
+                model: data.model,
+                color: data.color,
+                year: String(data.year),
+                mileage: String(data.mileage),
+            }}
+        />
     );
 }
