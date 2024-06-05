@@ -1,5 +1,6 @@
 ﻿import axios, {AxiosRequestConfig, AxiosResponse} from 'axios';
 import {getTokenWorkaround} from "@/lib/actions/authActions";
+import {deleteImage} from "@/lib/actions/auctionActions";
 
 const baseUrl = process.env.API_URL;
 
@@ -20,13 +21,21 @@ async function getHeaders() {
  * Handles successful responses from axios requests.
  * @param {AxiosResponse} response - The response object from axios.
  * @param {string} method - The HTTP method (GET, POST, PUT, DELETE).
+ * @param {string} url - The endpoint URL for additional processing.
+ * @param {Object} [body] - The request payload for POST and PUT methods.
  */
-async function handleResponse(response: AxiosResponse, method: string) {
+async function handleResponse(response: AxiosResponse, method: string, url: string, body?: any) {
     if (method === 'GET') {
         return response.data;
     }
     if (method === 'POST') {
         return {message: response.statusText, id: response.data.id};
+    }
+    if (method === 'DELETE') {
+        if (body && body.imageUrl) {
+            await deleteImage(body.imageUrl);
+        }
+        return response.statusText;
     } else {
         return response.statusText;
     }
@@ -47,7 +56,7 @@ async function handleError(error: any) {
  * Makes an HTTP request using axios with the specified method, url, and body.
  * @param {string} method - The HTTP method (GET, POST, PUT, DELETE).
  * @param {string} url - The endpoint URL.
- * @param {Object} [body] - The request payload for POST and PUT methods.
+ * @param {Object} [body] - The request payload for POST, PUT, and DELETE methods.
  */
 async function request(method: string, url: string, body?: {}) {
     const headers = await getHeaders();
@@ -60,7 +69,7 @@ async function request(method: string, url: string, body?: {}) {
 
     try {
         const response: AxiosResponse = await axios(requestOptions);
-        return handleResponse(response, method);
+        return handleResponse(response, method, url, body);
     } catch (error: any) {
         return handleError(error);
     }
@@ -71,5 +80,5 @@ export const fetchWrapper = {
     get: (url: string) => request('GET', url),
     post: (url: string, body: {}) => request('POST', url, body),
     put: (url: string, body: {}) => request('PUT', url, body),
-    delete: (url: string) => request('DELETE', url),
+    delete: (url: string, body?: {}) => request('DELETE', url, body),  // Pass body for DELETE method too
 };

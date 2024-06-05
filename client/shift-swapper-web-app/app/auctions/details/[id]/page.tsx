@@ -6,9 +6,11 @@ import CountdownTimer from "@/components/SaleCard/CountdownTimer";
 import SpecsTable from "@/components/SpecsTable/SpecsTable";
 import {IconEdit} from "@tabler/icons-react";
 import AuctionEditButton from "@/components/Buttons/AuctionEditButton";
+import {getCurrentUser} from "@/lib/actions/authActions";
 
 export default async function AuctionDetailsPage({params}: { params: { id: string } }) {
     const data = await getAuction(params.id);
+    const user = await getCurrentUser();
 
     return (
         <Container fluid>
@@ -23,7 +25,7 @@ export default async function AuctionDetailsPage({params}: { params: { id: strin
                                 >
                                     {data.make + ' ' + data.model}
                                 </Text>
-                                <AuctionEditButton auctionId={params.id}/>
+                                {user?.username === data.seller && <AuctionEditButton auctionId={data.id}/>}
                             </Group>
                             <Container className={classes.saleImageContainer}>
                                 <SaleImage data={data}/>

@@ -15,6 +15,7 @@ export default async function AuctionUpdatePage({ params }: { params: { id: stri
                 year: String(data.year),
                 mileage: String(data.mileage),
             }}
+            imageUrl={data.imageUrl}
         />
     );
 }

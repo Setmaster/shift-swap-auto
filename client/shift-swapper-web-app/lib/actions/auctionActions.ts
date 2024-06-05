@@ -38,12 +38,12 @@ export async function createAuction(formData: FormData) {
         data[key] = value;
     });
 
-    const { errors, validatedData } = await validateAuctionData(data);
+    const {errors, validatedData} = await validateAuctionData(data);
 
     if (errors) {
-        return { errors };
+        return {errors};
     }
-    
+
     if (validatedData) {
         // If there's an image, upload it and update the imageUrl
         if (data.image) {
@@ -66,10 +66,10 @@ export async function updateAuction(formData: FormData) {
     });
 
     // Validate the data
-    const { errors, validatedData } = await validateUpdateAuctionData(data);
+    const {errors, validatedData} = await validateUpdateAuctionData(data);
 
     if (errors) {
-        return { errors };
+        return {errors};
     }
 
     if (validatedData) {
@@ -81,12 +81,17 @@ export async function updateAuction(formData: FormData) {
             color: validatedData.color,
             mileage: validatedData.mileage,
         }
-        
+
         // Send the validated and sanitized data to the server
         const response = await fetchWrapper.put(`auctions/${data.id}`, updateData);
         revalidatePath('/');
         return response;
     }
+}
+
+export async function deleteAuction(id: string, imageUrl: string) {
+    revalidatePath('/')
+    return await fetchWrapper.delete(`auctions/${id}`, {imageUrl});
 }
 
 async function uploadImage(image: File) {
@@ -100,10 +105,22 @@ async function uploadImage(image: File) {
         Body: Buffer.from(bufferedImage),
         ContentType: image.type,
     });
-    
+
     if (response.$metadata.httpStatusCode !== 200) {
         throw new Error('Failed to upload image');
     }
-    
+
     return `https://shift-swap-imgs.s3.us-east-1.amazonaws.com/${fileName}.${extension}`
+}
+
+export async function deleteImage(imageUrl: string) {
+    const fileName = imageUrl.split('/').pop();
+    const response = await s3.deleteObject({
+        Bucket: 'shift-swap-imgs',
+        Key: fileName,
+    });
+
+    if (response.$metadata.httpStatusCode !== 204) {
+        throw new Error('Failed to delete image');
+    }
 }

@@ -5,7 +5,7 @@ import {useForm} from '@mantine/form';
 import {useState, useEffect} from 'react';
 import {DateTimePicker} from '@mantine/dates';
 import dayjs from 'dayjs';
-import {createAuction, updateAuction} from "@/lib/actions/auctionActions";
+import {createAuction, deleteAuction, updateAuction} from "@/lib/actions/auctionActions";
 import {useRouter} from 'next/navigation';
 import {notifications} from '@mantine/notifications';
 import ImageDropzone from '@/components/AuctionForm/ImageDropzone';
@@ -16,6 +16,7 @@ import {revalidatePath} from "next/cache";
 type AuctionFormProps = {
     mode?: 'create' | 'update';
     auctionId?: string;
+    imageUrl?: string;
     initialAuctionData?: {
         make: string;
         model: string;
@@ -28,7 +29,7 @@ type AuctionFormProps = {
     };
 };
 
-export default function AuctionForm({mode = 'create', auctionId, initialAuctionData}: AuctionFormProps) {
+export default function AuctionForm({mode = 'create', auctionId, initialAuctionData, imageUrl}: AuctionFormProps) {
     const router = useRouter();
     const form = useForm({
         initialValues: {
@@ -123,6 +124,7 @@ export default function AuctionForm({mode = 'create', auctionId, initialAuctionD
                     color: 'red',
                 });
             });
+            setSubmitting(false);
         } else {
             if (mode === 'create') {
                 router.push(`/auctions/details/${response.id}`);
@@ -131,7 +133,6 @@ export default function AuctionForm({mode = 'create', auctionId, initialAuctionD
                 router.push(`/auctions/details/${auctionId}`);
             }
         }
-        setSubmitting(false);
     };
 
     const handleCancel = () => {
@@ -141,6 +142,21 @@ export default function AuctionForm({mode = 'create', auctionId, initialAuctionD
             router.push('/');
         }
     };
+    
+    const handleDelete = async () => {
+        const response = await deleteAuction(auctionId!, imageUrl!);
+        if (response?.errors) {
+            response.errors.map((err: AuctionError) => {
+                notifications.show({
+                    title: 'Form Submission Error',
+                    message: `${err.error.status}: ${err.error.message}`,
+                    color: 'red',
+                });
+            });
+        } else {
+            router.push('/');
+        }
+    }
 
     return (
         <Container className={classes.formContainer}>
@@ -228,6 +244,11 @@ export default function AuctionForm({mode = 'create', auctionId, initialAuctionD
                     wrap="wrap"
                     className={classes.buttonsContainer}
                 >
+                    {mode === 'update' && (
+                        <Button onClick={handleDelete} size="md" variant="outline">
+                            Delete
+                        </Button>
+                    )}
                     <Button onClick={handleCancel} size="md" variant="outline">
                         Cancel
                     </Button>
