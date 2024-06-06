@@ -99,6 +99,19 @@
     depends_on:
       - mongodb
       - rabbitmq
+  notifications-service:
+    image: 7devio/notifications-service:latest
+    build:
+      context: .
+      dockerfile: server/NotificationsService/DockerFile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - RabbitMq__Host=rabbitmq
+    ports:
+      - 7004:80
+    depends_on:
+      - rabbitmq
 volumes:
   pgdata:
   mongodata:

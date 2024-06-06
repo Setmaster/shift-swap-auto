@@ -13,6 +13,8 @@ COPY server/SearchService/SearchService.csproj server/SearchService/SearchServic
 COPY server/GatewayService/GatewayService.csproj server/GatewayService/GatewayService.csproj
 # BiddingService
 COPY server/BiddingService/BiddingService.csproj server/BiddingService/BiddingService.csproj
+# NotificationsService
+COPY server/NotificationsService/NotificationsService.csproj server/NotificationsService/NotificationsService.csproj
 # Contracts
 COPY server/Contracts/Contracts.csproj server/Contracts/Contracts.csproj
 # IdentityService

@@ -24,13 +24,13 @@ COPY server/IdentityService/IdentityService.csproj server/IdentityService/Identi
 RUN dotnet restore shift-swapper.sln
 
 # Copy the app folders and publish the app
-COPY server/SearchService server/SearchService
+COPY server/NotificationsService server/NotificationsService
 COPY server/Contracts server/Contracts
-WORKDIR /app/server/SearchService
+WORKDIR /app/server/NotificationsService
 RUN dotnet publish -c Release -o /app/server/out
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/server/out ./
-ENTRYPOINT ["dotnet", "SearchService.dll"]
+ENTRYPOINT ["dotnet", "NotificationsService.dll"]
