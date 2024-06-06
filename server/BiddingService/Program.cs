@@ -11,9 +11,8 @@ builder.Services.AddControllers();
 // Configures MassTransit to use RabbitMQ as the message broker
 builder.Services.AddMassTransit(x =>
 {
-
     x.AddConsumersFromNamespaceContaining<AuctionCreatedConsumer>();
-    
+
     x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("bids", false));
 
     // Configuring MassTransit to use RabbitMQ as the transport
@@ -43,6 +42,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         cfg.TokenValidationParameters.NameClaimType = "username";
     });
 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 var app = builder.Build();
 
 app.UseAuthentication();
@@ -56,4 +57,3 @@ await DB.InitAsync("BidDb", MongoClientSettings
 );
 
 app.Run();
-
