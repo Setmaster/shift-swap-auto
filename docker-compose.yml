@@ -10,8 +10,8 @@
   mongodb:
     image: mongo
     environment:
-        - MONGO_INITDB_ROOT_USERNAME=root
-        - MONGO_INITDB_ROOT_PASSWORD=root
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
     ports:
       - 27017:27017
     volumes:
@@ -24,16 +24,22 @@
   auction-service:
     image: 7devio/auction-service:latest
     build:
-        context: .
-        dockerfile: server/AuctionService/DockerFile
+      context: .
+      dockerfile: server/AuctionService/DockerFile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_URLS=http://+7777
       - RabbitMq__Host=rabbitmq
       - ConnectionStrings__DefaultConnection=Server=postgres:5432;User Id=postgres;Password=postgres;Database=auctions
       - IdentityServiceUrl=http://identity-service
+      - Kestrel__Endpoints__Grpc__Protocols=http2
+      - Kestrel__Endpoints__Grpc__Urls=http://+:7777
+      - Kestrel__Endpoints__WebApi__Protocols=http1
+      - Kestrel__Endpoints__WebApi__Url=http://+:80
     ports:
       - 7001:80
+      - 7777:7777
     depends_on:
       - postgres
       - rabbitmq
@@ -76,6 +82,23 @@
       - ASPNETCORE_URLS=http://+:80
     ports:
       - 6001:80
+  bidding-service:
+    image: 7devio/bidding-service:latest
+    build:
+      context: .
+      dockerfile: server/BiddingService/DockerFile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - RabbitMq__Host=rabbitmq
+      - ConnectionStrings__BidDbConnection=mongodb://root:root@mongodb
+      - IdentityServiceUrl=http://identity-service
+      - GrpcAuction=http://auction-service:7777
+    ports:
+      - 7003:80
+    depends_on:
+      - mongodb
+      - rabbitmq
 volumes:
-    pgdata:
-    mongodata:
+  pgdata:
+  mongodata:
