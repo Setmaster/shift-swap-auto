@@ -1,6 +1,6 @@
 ﻿using AuctionService.Data;
 using AuctionService.DTOs;
-using AuctionService.Entities;
+using AuctionService.Models;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Contracts;

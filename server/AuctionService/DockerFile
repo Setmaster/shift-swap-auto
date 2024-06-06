@@ -11,6 +11,8 @@ COPY server/AuctionService/AuctionService.csproj server/AuctionService/AuctionSe
 COPY server/SearchService/SearchService.csproj server/SearchService/SearchService.csproj
 # GatewayService
 COPY server/GatewayService/GatewayService.csproj server/GatewayService/GatewayService.csproj
+# BiddingService
+COPY server/BiddingService/BiddingService.csproj server/BiddingService/BiddingService.csproj
 # Contracts
 COPY server/Contracts/Contracts.csproj server/Contracts/Contracts.csproj
 # IdentityService

@@ -1,4 +1,4 @@
-﻿using AuctionService.Entities;
+﻿using AuctionService.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace AuctionService.Data;
