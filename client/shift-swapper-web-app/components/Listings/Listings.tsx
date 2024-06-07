@@ -11,10 +11,10 @@ import {useParamsStore} from "@/lib/hooks/useParamsStore";
 import qs from 'query-string';
 import {getData} from "@/lib/actions/auctionActions";
 import NoResultsFilterError from "@/components/NoResultsFilterError/NoResultsFilterError";
+import {useAuctionStore} from "@/lib/hooks/useAuctionStore";
 
 export default function Listings() {
     const [loading, setLoading] = useState(true);
-    const [data, setData] = useState<PagedResult<Auction>>();
     const params = useParamsStore(
         (state) => ({
             pageNumber: state.pageNumber,
@@ -25,6 +25,12 @@ export default function Listings() {
             seller: state.seller,
             winner: state.winner,
         }));
+    const data = useAuctionStore((state) =>({
+        auctions: state.auctions,
+        totalCount: state.totalCount,
+        pageCount: state.pageCount,
+    }));
+    const setData = useAuctionStore((state) => state.setData);
     const setParams = useParamsStore((state) => state.setParams);
     const url = qs.stringify(params);
 
@@ -33,14 +39,13 @@ export default function Listings() {
     }
 
     useEffect(() => {
-        setLoading(true);
         getData(url).then((data) => {
             setData(data);
             setLoading(false);
         });
     }, [url]);
 
-    const cards = data?.results?.map((item: Auction) => (
+    const cards = data?.auctions?.map((item: Auction) => (
         <SaleCard key={item.id} data={item}/>
     )) || [];
 
@@ -48,7 +53,7 @@ export default function Listings() {
         <SaleCardSkeleton key={index}/>
     ));
 
-    if (data?.results?.length === 0 && !loading) {
+    if (data?.auctions?.length === 0 && !loading) {
         return (
             <>
                 <ListingFilters/>
