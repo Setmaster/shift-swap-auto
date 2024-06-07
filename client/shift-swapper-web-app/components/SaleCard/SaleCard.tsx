@@ -1,6 +1,6 @@
 ﻿'use client';
 
-import {ActionIcon, Card, Group, rem, Text, useMantineTheme,} from '@mantine/core';
+import {ActionIcon, Badge, Card, Group, rem, Text, useMantineTheme,} from '@mantine/core';
 import {IconBookmark, IconHeart, IconShare, IconStar} from '@tabler/icons-react';
 import classes from './SaleCard.module.css';
 import Link from "next/link";
@@ -63,9 +63,11 @@ export default function SaleCard({data}: SaleCardProps) {
 
             <Card.Section className={classes.footer}>
                 <Group justify="space-between">
-                    <Text fz="xs" c="dimmed">
-                        53 people bidding
+                    <Badge color={data.currentHighBid === 0 ? "red" : "green"} size={"xl"}>
+                    <Text fz="md">
+                        {data.currentHighBid === 0 ? 'No bids' : formatCurrency(data.currentHighBid)}
                     </Text>
+            </Badge>
                     <Group gap={0}>
                         <ActionIcon variant="subtle" color="gray">
                             <IconStar

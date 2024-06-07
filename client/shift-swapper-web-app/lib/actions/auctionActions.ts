@@ -124,3 +124,7 @@ export async function deleteImage(imageUrl: string) {
         throw new Error('Failed to delete image');
     }
 }
+
+export async function getBidsForAuction(id: string) : Promise<Bid[]> {
+    return await fetchWrapper.get(`bids/${id}`);
+}
