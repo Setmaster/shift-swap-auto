@@ -62,6 +62,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddGrpc();
+builder.Services.AddHostedService<AuctionStatusChecker>();
 
 var app = builder.Build();
 

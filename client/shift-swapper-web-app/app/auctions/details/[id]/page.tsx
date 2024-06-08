@@ -15,6 +15,7 @@ import {signIn} from "next-auth/react";
 import PlacedBidNotSignedInButton from "@/components/PlaceBid/PlaceBidNotSignedInButton";
 import {notFound} from "next/navigation";
 
+
 function isAuctionErrors(data: Auction | AuctionErrors): data is AuctionErrors {
     return (data as AuctionErrors).errors !== undefined;
 }
@@ -23,6 +24,7 @@ export default async function AuctionDetailsPage({params}: { params: { id: strin
     const data : Auction | AuctionErrors = await getAuction(params.id);
     const user: User | null = (await getCurrentUser());
 
+    console.log(data);
     if(isAuctionErrors(data)) {
             notFound();
     }
@@ -40,7 +42,7 @@ export default async function AuctionDetailsPage({params}: { params: { id: strin
                                 >
                                     {data.make + ' ' + data.model}
                                 </Text>
-                                {user?.username === data.seller && <AuctionEditButton auctionId={data.id}/>}
+                                {user?.username === data.seller && data.status.toString() === 'Live' && <AuctionEditButton auctionId={data.id}/>}
                             </Group>
                             <Container className={classes.saleImageContainer}>
                                 <SaleImage data={data}/>
@@ -60,7 +62,7 @@ export default async function AuctionDetailsPage({params}: { params: { id: strin
                                     <CountdownTimer auctionEnd={data.auctionEnd}/>
                                 </Group>
                                 {!user && <PlacedBidNotSignedInButton/>}
-                                {user && user?.username !== data.seller && <PlaceBidModal auctionId={data.id}/>}
+                                {user && data.status.toString() === 'Live' && user?.username !== data.seller && <PlaceBidModal auctionId={data.id}/>}
                             </Group>
                             <Container className={classes.bidsTableContainer}>
                                 <BidsTable user={user} auctionData={data}/>
