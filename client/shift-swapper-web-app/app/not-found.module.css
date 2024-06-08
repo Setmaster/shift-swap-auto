@@ -1,0 +1,63 @@
+﻿.root {
+    padding-top: rem(80px);
+    padding-bottom: rem(120px);
+    background-color: #870000;
+}
+
+.label {
+    text-align: center;
+    font-weight: 900;
+    font-size: rem(220px);
+    line-height: 1;
+    margin-bottom: calc(var(--mantine-spacing-xl) * 1.5);
+    color: var(--mantine-color-red-3);
+
+    @media (max-width: $mantine-breakpoint-sm) {
+        font-size: rem(120px);
+    }
+}
+
+.title {
+    font-family: Greycliff CF,
+    var(--mantine-font-family), serif;
+    text-align: center;
+    font-weight: 900;
+    font-size: rem(38px);
+    color: var(--mantine-color-white);
+
+    @media (max-width: $mantine-breakpoint-sm) {
+        font-size: rem(32px);
+    }
+}
+
+.description {
+    max-width: rem(540px);
+    margin: auto;
+    margin-top: var(--mantine-spacing-xl);
+    margin-bottom: calc(var(--mantine-spacing-xl) * 1.5);
+    color: var(--mantine-color-red-1);
+}
+
+.button {
+    font-size: 1.5rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.button a {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    background: var(--mantine-color-red-6);;
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.button a:hover,
+.button a:active {
+    background: var(--mantine-color-red-4);;
+}

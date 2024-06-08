@@ -64,6 +64,10 @@ type AuctionError = {
     };
 }
 
+type AuctionErrors = {
+    errors: AuctionError[];
+}
+
 type Bid = {
     id: string;
     auctionId: string;

@@ -13,10 +13,19 @@ import PlaceBidModal from "@/components/PlaceBid/PlaceBidModal";
 import React from "react";
 import {signIn} from "next-auth/react";
 import PlacedBidNotSignedInButton from "@/components/PlaceBid/PlaceBidNotSignedInButton";
+import {notFound} from "next/navigation";
+
+function isAuctionErrors(data: Auction | AuctionErrors): data is AuctionErrors {
+    return (data as AuctionErrors).errors !== undefined;
+}
 
 export default async function AuctionDetailsPage({params}: { params: { id: string } }) {
-    const data = await getAuction(params.id);
+    const data : Auction | AuctionErrors = await getAuction(params.id);
     const user: User | null = (await getCurrentUser());
+
+    if(isAuctionErrors(data)) {
+            notFound();
+    }
 
     return (
         <Container fluid>

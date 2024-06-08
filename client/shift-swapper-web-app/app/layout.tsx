@@ -10,6 +10,7 @@ import {theme} from '@/theme';
 import React from "react";
 import {Notifications} from "@mantine/notifications";
 import SignalRProvider from "@/lib/providers/SignalRProvider";
+import {getCurrentUser} from "@/lib/actions/authActions";
 
 export const metadata = {
     title: 'Shift Swapper',
@@ -20,9 +21,10 @@ type RootLayoutProps = {
     children: React.ReactNode;
 };
 
-export default function RootLayout({
+export default async function RootLayout({
                                        children,
                                    }: RootLayoutProps) {
+    const user = await getCurrentUser();
     return (
         <html lang="en">
         <head>
@@ -33,7 +35,7 @@ export default function RootLayout({
         <MantineProvider theme={theme} defaultColorScheme={"dark"}>
             <Notifications/>
             <MainHeader/>
-            <SignalRProvider>
+            <SignalRProvider user={user}>
                 {children}
             </SignalRProvider>
         </MantineProvider>

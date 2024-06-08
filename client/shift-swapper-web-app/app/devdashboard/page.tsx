@@ -1,11 +1,14 @@
 ﻿'use client';
-import React, { useState, useEffect } from 'react';
-import { Code, Container, Text, Title } from "@mantine/core";
-import { getSession, getTokenWorkaround } from "@/lib/actions/authActions";
-import { getUpdatedAuctionTest, updateAuctionTest } from "@/lib/actions/auctionActions";
+import React, {useState, useEffect} from 'react';
+import {Button, Code, Container, Text, Title} from "@mantine/core";
+import {getSession, getTokenWorkaround} from "@/lib/actions/authActions";
+import {getUpdatedAuctionTest, updateAuctionTest} from "@/lib/actions/auctionActions";
 import AuthTests from "@/components/AuthTests/AuthTests";
 import {Session} from "next-auth";
 import {JWT} from "next-auth/jwt";
+import {notifications} from "@mantine/notifications";
+import Image from "next/image";
+import AuctionCreatedToast from "@/components/Toasts/AuctionCreatedToast";
 
 export default function DevDashboard() {
     const [session, setSession] = useState<Session | null>(null);
@@ -51,11 +54,22 @@ export default function DevDashboard() {
             <Text size="xl">Welcome to the Shift Swapper Dev Dashboard</Text>
             <Text size="md">Session</Text>
             <Code block>{JSON.stringify(session, null, 2)}</Code>
-            <AuthTests loading={loading} result={result} doUpdate={doUpdate} />
+            <AuthTests loading={loading} result={result} doUpdate={doUpdate}/>
             <Text size="md">Updated Auction</Text>
             <Code block>{JSON.stringify(updatedAuction, null, 2)}</Code>
             <Text size="md">Token</Text>
             <Code block>{JSON.stringify(token, null, 2)}</Code>
+            <Button
+                onClick={() => {
+                    notifications.show({
+                        message: (
+                            <AuctionCreatedToast auction={updatedAuction!}/>
+                        ),
+                        autoClose: false,
+                    });
+                }
+                }
+            >Show Notification</Button>
         </Container>
     );
 }
