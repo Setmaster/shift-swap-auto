@@ -9,6 +9,7 @@ import MainHeader from "@/components/MainHeader/MainHeader";
 import {theme} from '@/theme';
 import React from "react";
 import {Notifications} from "@mantine/notifications";
+import SignalRProvider from "@/lib/providers/SignalRProvider";
 
 export const metadata = {
     title: 'Shift Swapper',
@@ -32,7 +33,9 @@ export default function RootLayout({
         <MantineProvider theme={theme} defaultColorScheme={"dark"}>
             <Notifications/>
             <MainHeader/>
-            {children}
+            <SignalRProvider>
+                {children}
+            </SignalRProvider>
         </MantineProvider>
         </body>
         </html>

@@ -37,7 +37,7 @@ export const useAuctionStore = createWithEqualityFn<State & Actions>((set) => ({
                     // If the auctionId matches, update the current price
                     return {
                         ...auction,
-                        currentPrice: amount,
+                        currentHighBid: amount,
                     };
                 }
                 return auction;

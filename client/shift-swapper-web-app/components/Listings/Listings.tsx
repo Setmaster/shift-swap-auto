@@ -33,7 +33,6 @@ export default function Listings() {
     const setData = useAuctionStore((state) => state.setData);
     const setParams = useParamsStore((state) => state.setParams);
     const url = qs.stringify(params);
-
     function setActivePage(pageNumber: number) {
         setParams({pageNumber});
     }
@@ -43,7 +42,7 @@ export default function Listings() {
             setData(data);
             setLoading(false);
         });
-    }, [url]);
+    }, [url, setData]);
 
     const cards = data?.auctions?.map((item: Auction) => (
         <SaleCard key={item.id} data={item}/>
