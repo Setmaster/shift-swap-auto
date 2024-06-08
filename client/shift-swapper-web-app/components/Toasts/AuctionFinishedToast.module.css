@@ -1,0 +1,12 @@
+﻿.link{
+    text-decoration: none;
+}
+
+.image{
+    border-radius: var(--mantine-radius-md);
+}
+
+.container{
+    padding: 0;
+}
+

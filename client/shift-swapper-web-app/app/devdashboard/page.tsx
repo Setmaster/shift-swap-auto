@@ -1,6 +1,6 @@
 ﻿'use client';
 import React, {useState, useEffect} from 'react';
-import {Button, Code, Container, Text, Title} from "@mantine/core";
+import {Button, Code, Container, Group, Text, Title} from "@mantine/core";
 import {getSession, getTokenWorkaround} from "@/lib/actions/authActions";
 import {getUpdatedAuctionTest, updateAuctionTest} from "@/lib/actions/auctionActions";
 import AuthTests from "@/components/AuthTests/AuthTests";
@@ -9,6 +9,7 @@ import {JWT} from "next-auth/jwt";
 import {notifications} from "@mantine/notifications";
 import Image from "next/image";
 import AuctionCreatedToast from "@/components/Toasts/AuctionCreatedToast";
+import AuctionFinishedToast from "@/components/Toasts/AuctionFinishedToast";
 
 export default function DevDashboard() {
     const [session, setSession] = useState<Session | null>(null);
@@ -48,6 +49,16 @@ export default function DevDashboard() {
         }
     };
 
+    const createDummyAuctionFinished = (auction: Auction): AuctionFinished => {
+        return {
+            itemSold: Math.random() >= 0.5,
+            auctionId: auction.id,
+            winner: "testuser",
+            seller: auction.seller,
+            amount: 50,
+        };
+    };
+
     return (
         <Container>
             <Title order={1}>Dev Dashboard</Title>
@@ -59,17 +70,32 @@ export default function DevDashboard() {
             <Code block>{JSON.stringify(updatedAuction, null, 2)}</Code>
             <Text size="md">Token</Text>
             <Code block>{JSON.stringify(token, null, 2)}</Code>
-            <Button
-                onClick={() => {
-                    notifications.show({
-                        message: (
-                            <AuctionCreatedToast auction={updatedAuction!}/>
-                        ),
-                        autoClose: false,
-                    });
-                }
-                }
-            >Show Notification</Button>
+            <Group>
+                <Button
+                    onClick={() => {
+                        notifications.show({
+                            message: (
+                                <AuctionCreatedToast auction={updatedAuction!}/>
+                            ),
+                            autoClose: false,
+                        });
+                    }
+                    }
+                >Show Created Notification</Button>
+                <Button
+                    onClick={() => {
+                        if (updatedAuction) {
+                            const auctionFinished = createDummyAuctionFinished(updatedAuction);
+                            notifications.show({
+                                message: (
+                                    <AuctionFinishedToast auction={updatedAuction} auctionFinished={auctionFinished} />
+                                ),
+                                autoClose: false,
+                            });
+                        }
+                    }}
+                >Show Finished Notification</Button>
+            </Group>
         </Container>
     );
 }

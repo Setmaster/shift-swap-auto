@@ -76,3 +76,12 @@ type Bid = {
     amount: number;
     bidStatus: string;
 }
+
+type AuctionFinished = {
+    itemSold: boolean;
+    auctionId: string;
+    winner?: string;
+    seller: string;
+    amount?: number;
+}
+    

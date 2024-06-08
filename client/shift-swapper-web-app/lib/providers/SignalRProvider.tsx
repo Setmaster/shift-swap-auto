@@ -7,6 +7,8 @@ import {useBidStore} from "@/lib/hooks/useBidStore";
 import {User} from "next-auth";
 import {notifications} from "@mantine/notifications";
 import AuctionCreatedToast from "@/components/Toasts/AuctionCreatedToast";
+import AuctionFinishedToast from "@/components/Toasts/AuctionFinishedToast";
+import {getAuction} from "@/lib/actions/auctionActions";
 
 type SignalRProviderProps = {
     children: ReactNode;
@@ -49,6 +51,15 @@ export default function SignalRProvider({children, user}: SignalRProviderProps) 
                                 ),
                             });
                         }
+                    });
+                    
+                    connection.on('AuctionFinished', async (auctionFinished : AuctionFinished ) => {
+                        const auction = await  getAuction(auctionFinished.auctionId);
+                        notifications.show({
+                            message: (
+                                <AuctionFinishedToast auction={auction} auctionFinished={auctionFinished}/>
+                            ),
+                        });
                     });
                 }).catch((error) => {
                 console.log('SignalR error', error);
