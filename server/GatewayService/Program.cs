@@ -23,6 +23,7 @@ builder.Services.AddCors(cfg =>
     cfg.AddPolicy("customPolicy", b =>
     {
         b.AllowAnyMethod()
+            .AllowAnyHeader()
             .AllowCredentials()
             .WithOrigins(builder.Configuration["ClientApp"]);
     });
