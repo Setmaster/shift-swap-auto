@@ -8,11 +8,11 @@ import {IconEdit} from "@tabler/icons-react";
 import AuctionEditButton from "@/components/Buttons/AuctionEditButton";
 import {getCurrentUser} from "@/lib/actions/authActions";
 import BidsTable from "@/components/BidsTable/BidsTable";
+import {User} from "next-auth";
 
 export default async function AuctionDetailsPage({params}: { params: { id: string } }) {
     const data = await getAuction(params.id);
-    const user = await getCurrentUser();
-    const bids = await getBidsForAuction(params.id);
+    const user : User | null = (await getCurrentUser());
     
     return (
         <Container fluid>
@@ -46,7 +46,7 @@ export default async function AuctionDetailsPage({params}: { params: { id: strin
                                 <CountdownTimer auctionEnd={data.auctionEnd}/>
                             </Group>
                             <Container className={classes.bidsTableContainer}>
-                                <BidsTable bids={bids}/>
+                                <BidsTable user={user} auctionData={data}/>
                             </Container>
                         </Stack>
                     </Container>
