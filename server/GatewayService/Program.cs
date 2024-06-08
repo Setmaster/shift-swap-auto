@@ -23,7 +23,7 @@ builder.Services.AddCors(cfg =>
     cfg.AddPolicy("customPolicy", b =>
     {
         b.AllowAnyMethod()
-            .AllowAnyHeader()
+            .WithHeaders("Content-Type", "Authorization", "x-requested-with", "x-signalr-user-agent")
             .AllowCredentials()
             .WithOrigins(builder.Configuration["ClientApp"]);
     });
