@@ -1,8 +1,7 @@
 ﻿'use client';
 
-import {ScrollArea, Stack, Table} from "@mantine/core";
+import {Container, ScrollArea, Stack, Text} from "@mantine/core";
 import {useEffect, useState} from "react";
-import {formatCurrency} from "@/lib/utils/generalUtils";
 import BidItem from "@/components/BidsTable/BidItem";
 import {User} from "next-auth";
 import {useBidStore} from "@/lib/hooks/useBidStore";
@@ -14,6 +13,8 @@ type BidsTableProps = {
     user: User | null;
     auctionData: Auction;
 }
+
+type HighestBid = Bid | { amount: number; id: null };
 
 export default function BidsTable({user, auctionData}: BidsTableProps) {
     const [loading, setLoading] = useState(true);
@@ -38,10 +39,30 @@ export default function BidsTable({user, auctionData}: BidsTableProps) {
     ));
 
     if (!loading) {
-        rows = bids.map((bid, index) => (
+        const highestAcceptedBid = bids.reduce<HighestBid>((highest, bid) => {
+            return bid.bidStatus === 'Accepted' && bid.amount > highest.amount ? bid : highest;
+        }, { amount: 0, id: null });
 
-            <BidItem bid={bid} key={index}/>
+        const sortedBids = highestAcceptedBid.amount > 0
+            ? [highestAcceptedBid as Bid, ...bids.filter(bid => bid.id !== highestAcceptedBid.id)]
+            : [...bids];
+
+        rows = sortedBids.map((bid, index) => (
+            <BidItem bid={bid} key={index} isHighestBid={highestAcceptedBid.id === bid.id}/>
         ));
+    }
+
+
+
+    if (!loading && bids.length === 0) {
+        return (
+            <Container fluid>
+                <Stack justify={"center"} align={"center"} h={{base: 180, md: 360}}>
+                    <Text size="xl" fw={600}>No bids placed yet!</Text>
+                    <Text size="md" fw={200}>Be the first to bid!</Text>
+                </Stack>
+            </Container>
+        );
     }
 
     return (

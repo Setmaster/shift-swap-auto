@@ -128,3 +128,33 @@ export async function validateUpdateAuctionData(data: Partial<AuctionFormValues>
         return { errors };
     }
 }
+
+// Define the schema for the bid values
+const BidSchema = z.object({
+    auctionId: z.string().uuid('Invalid auction ID'),
+    amount: z.number()
+        .positive('Bid amount must be a positive number')
+        .refine((val) => /^[1-9][0-9]*$/.test(String(val)), {
+            message: 'Bid amount must be a non-zero number and should not start with 0'
+        })
+});
+
+export async function validateBidData(data: { auctionId: string, amount: number }): Promise<{ errors?: any[], validatedData?: { auctionId: string, amount: number } }> {
+    const sanitizedData = {
+        auctionId: xss(data.auctionId),
+        amount: data.amount // Numbers don't need XSS sanitization
+    };
+
+    try {
+        const validatedData = BidSchema.parse(sanitizedData);
+
+        return { validatedData };
+    } catch (error: any) {
+        const errors = error.errors?.map((err: any) => ({
+            status: err.path,
+            message: err.message
+        })) || [{ status: 'Unknown', message: 'An unknown error occurred' }];
+
+        return { errors };
+    }
+}

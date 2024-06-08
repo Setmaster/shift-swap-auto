@@ -3,7 +3,7 @@
 import {fetchWrapper} from "@/lib/utils/fetchWrapper";
 import {S3} from '@aws-sdk/client-s3';
 import {randomUUID} from "node:crypto";
-import {validateAuctionData, validateUpdateAuctionData} from "@/lib/actions/sanitizationActions";
+import {validateAuctionData, validateBidData, validateUpdateAuctionData} from "@/lib/actions/sanitizationActions";
 import {revalidatePath} from "next/cache";
 import {redirect} from "next/navigation";
 
@@ -127,4 +127,16 @@ export async function deleteImage(imageUrl: string) {
 
 export async function getBidsForAuction(id: string) : Promise<Bid[]> {
     return await fetchWrapper.get(`bids/${id}`);
+}
+
+export async function placeBidForAuction(id: string, amount: number) {
+    const { errors, validatedData } = await validateBidData({ auctionId: id, amount });
+
+    if (errors) {
+        return { errors };
+    }
+
+    if (validatedData) {
+        return await fetchWrapper.post(`bids?auctionId=${validatedData.auctionId}&amount=${validatedData.amount}`, {});
+    }
 }
