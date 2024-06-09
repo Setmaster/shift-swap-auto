@@ -35,7 +35,6 @@ export default function PlaceBidModal({auctionId}: { auctionId: string}) {
         setSubmitting(true);
         try {
             const response = await placeBidForAuction(auctionId, Number(value));
-            console.log(response)
             if (response.errors) {
                 const errorMessage = response.errors[0]?.message || 'An unexpected error occurred.';
                 setError(errorMessage);
