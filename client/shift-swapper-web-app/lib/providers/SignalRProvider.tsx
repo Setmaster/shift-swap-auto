@@ -54,6 +54,10 @@ export default function SignalRProvider({children, user}: SignalRProviderProps) 
                         }
                         addAuction(auction);
                     });
+                    
+                    connection.on('AuctionDeleted', (auctionDeleted: { id: string }) => {
+                        removeAuction(auctionDeleted.id);
+                    });
 
                     connection.on('AuctionFinished', async (auctionFinished: AuctionFinished) => {
                         const auction = await getAuction(auctionFinished.auctionId);
@@ -62,11 +66,8 @@ export default function SignalRProvider({children, user}: SignalRProviderProps) 
                                 <AuctionFinishedToast auction={auction} auctionFinished={auctionFinished}/>
                             ),
                         });
-
-                        connection.on('AuctionDeleted', (auctionDeleted: { id: string }) => {
-                            removeAuction(auctionDeleted.id);
-                        });
                     });
+
                 }).catch((error) => {
                 console.log('SignalR error', error);
             });
