@@ -13,7 +13,7 @@ interface LinkItem {
 // Define the links array
 const links: LinkItem[] = [
     { link: '/', label: 'Auctions' },
-    { link: '/placeholder', label: 'Architecture' },
+    { link: '/architecture', label: 'Architecture' },
     {
         link: '/about',
         label: 'About',
