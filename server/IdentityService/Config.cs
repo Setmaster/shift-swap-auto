@@ -36,7 +36,7 @@ public static class Config
             {
                 ClientId = "nextApp",
                 ClientName = "Next App",
-                ClientSecrets = {new Secret("secret".Sha256())},
+                ClientSecrets = {new Secret("somethingreallyreallysecret".Sha256())},
                 AllowedGrantTypes = GrantTypes.CodeAndClientCredentials,
                 RequirePkce =   false,
                 RedirectUris = {"http://localhost:3000/api/auth/callback/id-server"},
