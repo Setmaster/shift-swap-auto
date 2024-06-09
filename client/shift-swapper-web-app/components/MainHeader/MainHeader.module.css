@@ -30,18 +30,28 @@
     @mixin hover {
         color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
         text-decoration: none;
-        }
-    /*@mixin hover {*/
-    /*    background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));*/
-    /*}*/
+    }
+}
+
+.subLink {
+    display: block;
+    line-height: 1;
+    padding: rem(8px) rem(12px);
+
+    text-decoration: none;
+    color: light-dark(var(--mantine-color-gray-8), var(--mantine-color-dark-0));
+    font-size: var(--mantine-font-size-sm);
+    font-weight: 500;
+    @mixin hover {
+        color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
+        text-decoration: none;
+    }
 }
 
 .active {
-    /*background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-4));*/
-    
     border-bottom: rem(2px) solid transparent;
-    color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
-    border-bottom-color:  light-dark(var(--mantine-color-black), var(--mantine-color-white));
+    color: light-dark(var(--mantine-color-gray-5), var(--mantine-color-white));
+    border-bottom-color: light-dark(var(--mantine-color-gray-5), var(--mantine-color-white));
 }
 
 .subActive {
@@ -52,17 +62,9 @@
     margin-right: rem(5px);
 }
 
-.dropdownColorSchemeToggle{
-
-}
-
-.topSection {
-
-}
-
 .bottomSection {
     display: flex;
-    justify-content: center; 
+    justify-content: center;
     background: #870000;
 }
 
@@ -87,30 +89,4 @@
     &::before {
         display: none;
     }
-}
-
-.tab {
-    /*font-weight: 500;*/
-    /*height: rem(38);*/
-    /*background-color: transparent;*/
-    /*position: relative;*/
-    /*bottom: -1px;*/
-
-    /*&::before,*/
-    /*&::after {*/
-    /*    background-color: light-dark(*/
-    /*            var(--mantine-color-gray-2),*/
-    /*            var(--mantine-color-dark-7)*/
-    /*    ) !important;*/
-    /*}*/
-
-    /*&:hover {*/
-    /*    background-color: light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-5));*/
-    /*}*/
-
-    /*&[data-active] {*/
-    /*    background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-7));*/
-    /*    border-color: light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-7));*/
-    /*    border-bottom-color: transparent;*/
-    /*}*/
 }

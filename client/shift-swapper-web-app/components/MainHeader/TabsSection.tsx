@@ -26,7 +26,7 @@ export default function TabsSection({ links }: TabsSectionProps) {
         const menuItems = link.links?.map((item: LinkItem) => (
             <Menu.Item key={item.link}>
                 <Link href={item.link}
-                      className={cx(classes.link, { [classes.subActive]: isActiveLink(path, item.link) })}>
+                      className={cx(classes.subLink, { [classes.subActive]: isActiveLink(path, item.link) })}>
                     {item.label}
                 </Link>
             </Menu.Item>

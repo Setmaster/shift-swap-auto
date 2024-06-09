@@ -12,9 +12,8 @@ interface LinkItem {
 
 // Define the links array
 const links: LinkItem[] = [
-    { link: '/contraptions', label: 'Contraptions' },
-    { link: '/contraptions/share', label: 'Share' },
-    { link: '/community', label: 'Community' },
+    { link: '/', label: 'Auctions' },
+    { link: '/placeholder', label: 'Architecture' },
     {
         link: '/about',
         label: 'About',
