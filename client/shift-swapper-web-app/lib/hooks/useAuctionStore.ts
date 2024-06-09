@@ -12,8 +12,9 @@ type State = {
 type Actions = {
     setData: (data: PagedResult<Auction>) => void;
     setCurrentPrice: (auctionId: string , amount: number) => void;
+    addAuction: (auction: Auction) => void;
+    removeAuction: (id: string) => void;
 }
-
 const initialState: State = {
     auctions: [],
     totalCount: 0,
@@ -24,13 +25,12 @@ export const useAuctionStore = createWithEqualityFn<State & Actions>((set) => ({
     ...initialState,
     setData: (data) => {
         set(() => ({
-            auctions: data.results,    
-            totalCount: data.totalCount, 
-            pageCount: data.pageCount, 
+            auctions: data.results,
+            totalCount: data.totalCount,
+            pageCount: data.pageCount,
         }));
     },
     setCurrentPrice: (auctionId, amount) => {
-
         set((state) => ({
             auctions: state.auctions.map((auction) => {
                 if (auction.id === auctionId) {
@@ -44,4 +44,12 @@ export const useAuctionStore = createWithEqualityFn<State & Actions>((set) => ({
             }),
         }));
     },
+    addAuction: (auction) => {
+        set((state) => ({
+            auctions: [auction, ...state.auctions],
+        }));
+    },
+    removeAuction: (id) => set((state) => ({
+        auctions: state.auctions.filter(auction => auction.id !== id)
+    })),
 }), shallow);

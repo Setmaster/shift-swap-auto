@@ -19,6 +19,8 @@ export default function SignalRProvider({children, user}: SignalRProviderProps) 
     const [connection, setConnection] = useState<HubConnection | null>(null);
     const setCurrentPrice = useAuctionStore(state => state.setCurrentPrice);
     const addBid = useBidStore(state => state.addBid);
+    const addAuction = useAuctionStore(state => state.addAuction);
+    const removeAuction = useAuctionStore(state => state.removeAuction);
 
     useEffect(() => {
         const newConnection = new HubConnectionBuilder()
@@ -42,7 +44,7 @@ export default function SignalRProvider({children, user}: SignalRProviderProps) 
                         }
                         addBid(bid);
                     });
-                    
+
                     connection.on('AuctionCreated', (auction: Auction) => {
                         if (user?.username !== auction.seller) {
                             notifications.show({
@@ -51,14 +53,20 @@ export default function SignalRProvider({children, user}: SignalRProviderProps) 
                                 ),
                             });
                         }
+                        addAuction(auction);
                     });
-                    
-                    connection.on('AuctionFinished', async (auctionFinished : AuctionFinished ) => {
-                        const auction = await  getAuction(auctionFinished.auctionId);
+
+                    connection.on('AuctionFinished', async (auctionFinished: AuctionFinished) => {
+                        const auction = await getAuction(auctionFinished.auctionId);
                         notifications.show({
                             message: (
                                 <AuctionFinishedToast auction={auction} auctionFinished={auctionFinished}/>
                             ),
+                        });
+
+                        connection.on('AuctionDeleted', (auctionDeleted: { id: string }) => {
+                            console.log('AuctionDeleted', auctionDeleted);
+                            removeAuction(auctionDeleted.id);
                         });
                     });
                 }).catch((error) => {
@@ -69,7 +77,7 @@ export default function SignalRProvider({children, user}: SignalRProviderProps) 
         return () => {
             connection?.stop();
         }
-    }, [connection, setCurrentPrice, addBid]);
+    }, [connection, setCurrentPrice, addBid, addAuction, removeAuction, user?.username]);
 
     return (
         <>
