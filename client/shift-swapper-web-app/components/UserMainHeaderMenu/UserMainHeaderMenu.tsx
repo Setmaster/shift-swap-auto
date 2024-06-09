@@ -46,7 +46,7 @@ export default function UserMainHeaderMenu({user} : UserMainHeaderMenuProps) {
     }
     
     const handleLogin = () => {
-        signIn('id-server', {callbackUrl: '/'})
+        signIn('id-server', {callbackUrl: '/'}, {prompt: 'login'})
     };
     
     const handleLogout = () => {
