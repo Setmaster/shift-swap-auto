@@ -99,11 +99,6 @@ export default function UserMainHeaderMenu({user} : UserMainHeaderMenuProps) {
                     Sell my vehicle
                 </Menu.Item>
                 <Menu.Item
-                    leftSection={<IconStar style={{ width: rem(16), height: rem(16) }} color={theme.colors.yellow[6]} stroke={1.5} />}
-                >
-                    Saved posts
-                </Menu.Item>
-                <Menu.Item
                     component={Link}
                     href={"/devdashboard"}
                     leftSection={<IconRadioactive style={{ width: rem(16), height: rem(16) }} color={theme.colors.green[6]} stroke={1.5} />}
