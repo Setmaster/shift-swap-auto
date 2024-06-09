@@ -38,7 +38,6 @@ export default function SignalRProvider({children, user}: SignalRProviderProps) 
                     console.log('SignalR connected');
 
                     connection.on('BidPlaced', (bid: Bid) => {
-                        console.log('BidPlaced', bid);
                         if (bid.bidStatus.includes('Accepted')) {
                             setCurrentPrice(bid.auctionId, bid.amount);
                         }
@@ -65,7 +64,6 @@ export default function SignalRProvider({children, user}: SignalRProviderProps) 
                         });
 
                         connection.on('AuctionDeleted', (auctionDeleted: { id: string }) => {
-                            console.log('AuctionDeleted', auctionDeleted);
                             removeAuction(auctionDeleted.id);
                         });
                     });

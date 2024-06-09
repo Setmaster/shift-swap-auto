@@ -58,7 +58,7 @@ export default function BidsTable({user, auctionData}: BidsTableProps) {
         return (
             <Container fluid>
                 <Stack justify={"center"} align={"center"} h={{base: 180, md: 360}}>
-                    <Text size="xl" fw={600}>No bids placed yet!</Text>
+                    <Text size="xl" fw={600}>No bids placed yet</Text>
                     <Text size="md" fw={200}>Be the first to bid!</Text>
                 </Stack>
             </Container>
