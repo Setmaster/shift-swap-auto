@@ -2,12 +2,18 @@
 
 import { Container } from '@mantine/core';
 import React, { useCallback } from 'react';
-import ReactFlow, { addEdge, Background, Controls, MiniMap, useEdgesState, useNodesState, Handle, Position } from 'reactflow';
+import ReactFlow, { addEdge, Background, Controls, MiniMap, useEdgesState, useNodesState, Handle, Position, Node, Edge, Connection } from 'reactflow';
 import 'reactflow/dist/style.css';
 import classes from './ArchitectureFlowChart.module.css';
 
-const initialNodes = [
-    { id: 'webApp', type: 'inputNode', position: { x: 0, y: 200 }, data: { label: 'Web App (Next.js)', hideLeftHandle: true} },
+type CustomNodeData = {
+    label: string;
+    hideLeftHandle?: boolean;
+    hideRightHandle?: boolean;
+};
+
+const initialNodes: Node<CustomNodeData>[] = [
+    { id: 'webApp', type: 'inputNode', position: { x: 0, y: 200 }, data: { label: 'Web App (Next.js)', hideLeftHandle: true } },
     { id: 'gateway', type: 'inputNode', position: { x: 200, y: 200 }, data: { label: 'Gateway Service (.NET Backend)' } },
     { id: 'identityService', type: 'inputNode', position: { x: 600, y: 0 }, data: { label: 'Identity Service\n(Postgres DB)', hideRightHandle: true } },
     { id: 'auctionService', type: 'inputNode', position: { x: 600, y: 100 }, data: { label: 'Auction Service\n(Postgres DB)' } },
@@ -17,7 +23,7 @@ const initialNodes = [
     { id: 'eventBus', type: 'bigNode', position: { x: 1000, y: 100 }, data: { label: 'RabbitMQ Event Bus' }, style: { width: 100, height: 400 } }
 ];
 
-const initialEdges = [
+const initialEdges: Edge[] = [
     { id: 'e1', source: 'webApp', target: 'gateway', sourceHandle: 'a', targetHandle: 'b2', animated: true },
     { id: 'e2', source: 'gateway', target: 'identityService', sourceHandle: 'a', targetHandle: 'b3', animated: true },
     { id: 'e3', source: 'gateway', target: 'auctionService', sourceHandle: 'a', targetHandle: 'b4', animated: true },
@@ -31,7 +37,7 @@ const initialEdges = [
 ];
 
 // Custom node with ports on the left and right
-const InputNode = ({ data }) => (
+const InputNode = ({ data }: { data: CustomNodeData }) => (
     <div style={{ padding: 10, backgroundColor: '#fff', border: '1px solid #ddd', borderRadius: 5 }}>
         {!data.hideRightHandle && <Handle type="source" position={Position.Right} id="a" />}
         <div className={classes.label}>{data.label}</div>
@@ -39,7 +45,7 @@ const InputNode = ({ data }) => (
     </div>
 );
 
-const BigNode = ({ data }) => (
+const BigNode = ({ data }: { data: CustomNodeData }) => (
     <div style={{ padding: 10, backgroundColor: '#fff', border: '1px solid #ddd', borderRadius: 5, height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <Handle type="target" position={Position.Left} id="b9" style={{ top: 50 }} />
         <Handle type="target" position={Position.Left} id="b10" style={{ top: 150 }} />
@@ -55,14 +61,15 @@ const nodeTypes = {
 };
 
 export default function ArchitectureFlowChart() {
-    const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+    const [nodes, setNodes, onNodesChange] = useNodesState<CustomNodeData>(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
     const onConnect = useCallback(
-        (params) => setEdges((eds) => addEdge(params, eds)),
+        (params: Connection) => setEdges((eds) => addEdge(params, eds)),
         [setEdges],
     );
 
+    // @ts-ignore
     return (
         <Container fluid h={1080}>
             <ReactFlow

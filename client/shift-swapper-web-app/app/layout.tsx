@@ -13,8 +13,8 @@ import SignalRProvider from "@/lib/providers/SignalRProvider";
 import {getCurrentUser} from "@/lib/actions/authActions";
 
 export const metadata = {
-    title: 'Shift Swapper',
-    description: 'Welcome to Shift Swapper!',
+    title: 'Shift Swap',
+    description: 'Welcome to Shift Swap!',
 };
 
 type RootLayoutProps = {

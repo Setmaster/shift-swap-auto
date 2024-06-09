@@ -112,6 +112,30 @@
       - 7004:80
     depends_on:
       - rabbitmq
+  web-app:
+    image: 7devio/web-app
+    build:
+      context: .
+      dockerfile: client/shift-swapper-web-app/DockerFile
+    volumes:
+      - /var/lib/web/data
+    ports:
+      - 3000:3000
+    environment:
+      - AWS_ACCESS_KEY_ID="REDACTED"
+      - AWS_SECRET_ACCESS_KEY="REDACTED"
+      - NEXTAUTH_SECRET=somethingreallyreallysecret
+      - NEXTAUTH_URL=http://web-app
+      - API_URL=http://gateway-service/
+      - ID_URL=http://identity-service
+      - NEXT_PUBLIC_NOTIFY_URL=http://gateway-service/notifications
+    depends_on:
+      - auction-service
+      - search-service
+      - identity-service
+      - bidding-service
+      - notifications-service
+
 volumes:
   pgdata:
   mongodata:
