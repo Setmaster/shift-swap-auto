@@ -428,3 +428,4 @@ coverage*[.json, .xml, .info]
 
 /server/IdentityService/keys/*
 .env
+/devcerts/*
