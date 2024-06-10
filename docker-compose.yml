@@ -83,9 +83,9 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:80
+      - ClientApp=http://app.shiftswap.com
       - ConnectionStrings__DefaultConnection=Server=postgres:5432;User Id=postgres;Password=postgres;Database=identity
-    ports:
-      - 80:80
+      - VIRTUAL_HOST=id.shiftswap.com
     networks:
       custom:
         ipv4_address: 10.5.0.200
@@ -99,8 +99,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:80
-    ports:
-      - 6001:80
+      - VIRTUAL_HOST=api.shiftswap.com
+      - ClientApp=http://app.shiftswap.com
     networks:
       custom:
   bidding-service:
@@ -144,8 +144,6 @@ services:
       dockerfile: client/shift-swapper-web-app/DockerFile
     volumes:
       - /var/lib/web/data
-    ports:
-      - 3000:3000
     networks:
       custom:
     extra_hosts:
@@ -154,11 +152,21 @@ services:
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
       - NEXTAUTH_SECRET=somethingreallyreallysecret
-      - NEXTAUTH_URL=http://localhost:3000
+      - NEXTAUTH_URL=http://app.shiftswap.com
       - NEXTAUTH_URL_INTERNAL=http://web-app:3000
       - API_URL=http://gateway-service/
       - ID_URL=http://id.shiftswap.com
       - NEXT_PUBLIC_NOTIFY_URL=http://gateway-service/notifications
+      - VIRTUAL_HOST=app.shiftswap.com
+      - VIRTUAL_PORT=3000
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy
+    ports:
+      - 80:80
+    networks:
+        custom:
+    volumes:
+        - /var/run/docker.sock:/tmp/docker.sock:ro
 volumes:
   pgdata:
   mongodata:
