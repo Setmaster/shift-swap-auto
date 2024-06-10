@@ -100,7 +100,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:80
       - VIRTUAL_HOST=api.shiftswap.com
-      - ClientApp=http://app.shiftswap.com
+      - ClientApp=https://app.shiftswap.com
     networks:
       custom:
   bidding-service:
