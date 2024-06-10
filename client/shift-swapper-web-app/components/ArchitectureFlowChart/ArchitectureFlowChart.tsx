@@ -3,7 +3,6 @@
 import { Container } from '@mantine/core';
 import React, { useCallback } from 'react';
 import ReactFlow, { addEdge, Background, Controls, MiniMap, useEdgesState, useNodesState, Handle, Position, Node, Edge, Connection } from 'reactflow';
-import 'reactflow/dist/style.css';
 import classes from './ArchitectureFlowChart.module.css';
 
 type CustomNodeData = {
