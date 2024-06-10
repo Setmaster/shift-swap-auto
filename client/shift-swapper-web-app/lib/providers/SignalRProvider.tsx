@@ -33,7 +33,7 @@ export default function SignalRProvider({children, user}: SignalRProviderProps) 
             .build();
 
         setConnection(newConnection);
-    }, []);
+    }, [apiURL]);
 
     useEffect(() => {
         if (connection) {
