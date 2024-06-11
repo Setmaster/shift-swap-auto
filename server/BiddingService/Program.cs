@@ -5,6 +5,7 @@ using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using MongoDB.Driver;
 using MongoDB.Entities;
+using Polly;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,14 @@ builder.Services.AddMassTransit(x =>
     // Configuring MassTransit to use RabbitMQ as the transport
     x.UsingRabbitMq((context, cfg) =>
     {
+        
+        // Configures the message retry policy for the bus
+        cfg.UseMessageRetry(r =>
+        {
+            r.Handle<RabbitMqConnectionException>();
+            r.Interval(5, TimeSpan.FromSeconds(10));
+        });
+        
         // Configuring the RabbitMQ host
         cfg.Host(builder.Configuration["RabbitMq:Host"], "/", host =>
         {
@@ -56,8 +65,13 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-await DB.InitAsync("BidDb", MongoClientSettings
-    .FromConnectionString(builder.Configuration.GetConnectionString("BidDbConnection"))
-);
+// Configuring a retry policy for initializing the database, mongodb entities can error will a timeout exception if the database is not ready
+await Policy.Handle<TimeoutException>()
+    .WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(10))
+    .ExecuteAndCaptureAsync(async () =>
+    {
+            await DB.InitAsync("BidDb", MongoClientSettings
+                .FromConnectionString(builder.Configuration.GetConnectionString("BidDbConnection")));
+        });
 
 app.Run();

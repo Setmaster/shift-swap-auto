@@ -22,29 +22,35 @@ builder.Services.AddMassTransit(x =>
 {
     // Adds all consumers (message handlers) from the namespace containing AuctionCreatedConsumer
     x.AddConsumersFromNamespaceContaining<AuctionCreatedConsumer>();
-    
+
     // Sets the naming convention for the endpoints to use kebab-case format with the prefix "search" eg. search-auction-created
     x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("search", false));
-    
+
     // Configures MassTransit to use RabbitMQ as the transport protocol
     x.UsingRabbitMq((context, cfg) =>
     {
-        
+        // Configures the message retry policy for the bus
+        cfg.UseMessageRetry(r =>
+        {
+            r.Handle<RabbitMqConnectionException>();
+            r.Interval(5, TimeSpan.FromSeconds(10));
+        });
+
         // Configuring the RabbitMQ host
         cfg.Host(builder.Configuration["RabbitMq:Host"], "/", host =>
         {
             host.Username(builder.Configuration.GetValue("RabbitMq:Username", "guest"));
             host.Password(builder.Configuration.GetValue("RabbitMq:Password", "guest"));
         });
-        
+
         cfg.ReceiveEndpoint("search-auction-created", e =>
         {
             // Configures the consumer to use a message retry policy
-            e.UseMessageRetry(r => r.Interval(5,5 ));
-            
+            e.UseMessageRetry(r => r.Interval(5, 5));
+
             e.ConfigureConsumer<AuctionCreatedConsumer>(context);
         });
-        
+
         // Automatically configures all endpoints defined by the consumers in the context
         cfg.ConfigureEndpoints(context);
     });
@@ -61,15 +67,14 @@ app.MapControllers();
 // Registering a callback to be executed when the application has fully started
 app.Lifetime.ApplicationStarted.Register(async () =>
 {
-    try
-    {
-        // Attempting to initialize the database
-        await DbInitializer.InitDb(app);
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine(ex.Message);
-    }
+    // Configuring a retry policy for initializing the database, mongodb entities can error will a timeout exception if the database is not ready
+    await Policy.Handle<TimeoutException>()
+        .WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(10))
+        .ExecuteAndCaptureAsync(async () =>
+        {
+            // Attempting to initialize the database
+            await DbInitializer.InitDb(app);
+        });
 });
 
 app.Run();

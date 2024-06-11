@@ -21,15 +21,19 @@ export default function SignalRProvider({children, user}: SignalRProviderProps) 
     const addBid = useBidStore(state => state.addBid);
     const addAuction = useAuctionStore(state => state.addAuction);
     const removeAuction = useAuctionStore(state => state.removeAuction);
-
+    const apiURL= process.env.NODE_ENV === 'production'
+        ? 'https://api.shiftswap.com/notifications'
+        : process.env.NEXT_PUBLIC_NOTIFY_URL;
+    
+    
     useEffect(() => {
         const newConnection = new HubConnectionBuilder()
-            .withUrl('http://localhost:6001/notifications')
+            .withUrl(apiURL!)
             .withAutomaticReconnect()
             .build();
 
         setConnection(newConnection);
-    }, []);
+    }, [apiURL]);
 
     useEffect(() => {
         if (connection) {

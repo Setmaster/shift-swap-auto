@@ -14,6 +14,14 @@ builder.Services.AddMassTransit(x =>
     // Configuring MassTransit to use RabbitMQ as the transport
     x.UsingRabbitMq((context, cfg) =>
     {
+        
+        // Configures the message retry policy for the bus
+        cfg.UseMessageRetry(r =>
+        {
+            r.Handle<RabbitMqConnectionException>();
+            r.Interval(5, TimeSpan.FromSeconds(10));
+        });
+        
         // Configuring the RabbitMQ host
         cfg.Host(builder.Configuration["RabbitMq:Host"], "/", host =>
         {
