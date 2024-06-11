@@ -1,0 +1,34 @@
+name: deploy-identity
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+    paths:
+      - 'server/IdentityService/**'
+  pull_request:
+    branches: [ master ]
+    paths:
+      - 'server/IdentityService/**'
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Login to docker hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{secrets.DOCKERHUB_USERNAME}}
+          password: ${{secrets.DOCKERHUB_PASSWORD}}
+      - name: Build and push the Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: server/IdentityService/Dockerfile
+          push: true
+          tags: 7devio/identity-service:latest
