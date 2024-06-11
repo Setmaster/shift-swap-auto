@@ -29,6 +29,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: server/IdentityService/Dockerfile
+          file: server/IdentityService/DockerFile
           push: true
           tags: 7devio/identity-service:latest
