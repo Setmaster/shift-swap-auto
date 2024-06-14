@@ -1,15 +1,15 @@
-name: deploy-identity
+﻿name: deploy-auction
 
 on:
   workflow_dispatch:
   push:
     branches: [ master ]
     paths:
-      - 'server/IdentityService/**'
+      - 'server/AuctionService/**'
   pull_request:
     branches: [ master ]
     paths:
-      - 'server/IdentityService/**'
+      - 'server/AuctionService/**'
 
 jobs:
   build:
@@ -27,6 +27,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: server/IdentityService/DockerFile
+          file: server/AuctionService/DockerFile
           push: true
-          tags: 7devio/shift-swap-identity-service:latest
+          tags: 7devio/shift-swap-auction-service:latest
