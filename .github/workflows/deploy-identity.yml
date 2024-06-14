@@ -5,11 +5,11 @@ on:
   push:
     branches: [ master ]
     paths:
-      - 'server/ShiftSwapIdentityService/**'
+      - 'server/IdentityService/**'
   pull_request:
     branches: [ master ]
     paths:
-      - 'server/ShiftSwapIdentityService/**'
+      - 'server/IdentityService/**'
 
 jobs:
   build:
@@ -27,6 +27,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: server/ShiftSwapIdentityService/DockerFile
+          file: server/IdentityService/DockerFile
           push: true
           tags: 7devio/shift-swap-identity-service:latest
