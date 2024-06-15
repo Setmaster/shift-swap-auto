@@ -30,7 +30,7 @@ internal static class HostingExtensions
                 cfg.Events.RaiseFailureEvents = true;
                 cfg.Events.RaiseSuccessEvents = true;
 
-                if (builder.Environment.IsEnvironment("Docker"))
+                if (builder.Environment.IsEnvironment("Docker") || builder.Environment.IsProduction() )
                 {
                     cfg.IssuerUri = "identity-service";
                 }
