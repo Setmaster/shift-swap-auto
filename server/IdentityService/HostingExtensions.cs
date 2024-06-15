@@ -67,7 +67,7 @@ internal static class HostingExtensions
         app.UseStaticFiles();
         app.UseRouting();
 
-        if (app.Environment.IsDevelopment())
+        if (app.Environment.IsProduction())
         {
             app.Use(async (ctx, next) =>
             {
