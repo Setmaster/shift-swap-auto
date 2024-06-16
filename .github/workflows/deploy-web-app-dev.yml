@@ -1,4 +1,4 @@
-﻿name: deploy-webapp
+﻿name: deploy-webapp-dev
 
 on:
   workflow_dispatch:
