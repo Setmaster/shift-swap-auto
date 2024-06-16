@@ -21,6 +21,9 @@ public class SeedData
         // Return if there are already users in the database
         if (userMgr.Users.Any()) return;
 
+        var alicePassword = Environment.GetEnvironmentVariable("ALICE_PASSWORD") ?? throw new Exception("ALICE_PASSWORD not set");
+        var bobPassword = Environment.GetEnvironmentVariable("BOB_PASSWORD") ?? throw new Exception("BOB_PASSWORD not set");
+
         var alice = userMgr.FindByNameAsync("alice").Result;
         if (alice == null)
         {
@@ -30,7 +33,7 @@ public class SeedData
                 Email = "AliceSmith@email.com",
                 EmailConfirmed = true,
             };
-            var result = userMgr.CreateAsync(alice, "Pass123$").Result;
+            var result = userMgr.CreateAsync(alice, alicePassword).Result;
             if (!result.Succeeded)
             {
                 throw new Exception(result.Errors.First().Description);
@@ -61,7 +64,7 @@ public class SeedData
                 Email = "BobSmith@email.com",
                 EmailConfirmed = true
             };
-            var result = userMgr.CreateAsync(bob, "Pass123$").Result;
+            var result = userMgr.CreateAsync(bob, bobPassword).Result;
             if (!result.Succeeded)
             {
                 throw new Exception(result.Errors.First().Description);
