@@ -3,7 +3,7 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 COPY client/shift-swapper-web-app/package*.json ./
-RUN npm ci --omit=dev
+RUN  npm install --omit-dev
 
 FROM node:20-alpine AS builder
 WORKDIR /app
