@@ -2,13 +2,13 @@
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-COPY ./package*.json ./
+COPY client/shift-swapper-web-app/package*.json ./
 RUN  npm install --omit-dev
 
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY ./ ./
+COPY client/shift-swapper-web-app/ ./
 
 ENV NEXT_TELEMETRY_DISABLED 1
 
