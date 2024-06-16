@@ -21,7 +21,7 @@ export default function SignalRProvider({ children, user }: SignalRProviderProps
     const addBid = useBidStore(state => state.addBid);
     const addAuction = useAuctionStore(state => state.addAuction);
     const removeAuction = useAuctionStore(state => state.removeAuction);
-    const apiURL = process.env.NEXT_PUBLIC_NOTIFY_API_URL;
+    const apiURL = process.env.NEXT_PUBLIC_NOTIFY_API_URL ?? "https://gateway.shiftswap.vi7.org/notifications";
 
     useEffect(() => {
         const newConnection = new HubConnectionBuilder()

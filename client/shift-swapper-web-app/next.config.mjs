@@ -11,7 +11,7 @@ const nextConfig = {
         ignoreBuildErrors: true, // needed because of issues on nextAuths and reactflow end 
     },
     reactStrictMode: false,
-    
+    //productionBrowserSourceMaps: true,
 };
 
 export default nextConfig;
