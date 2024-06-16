@@ -27,6 +27,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: server/GatewayService/DockerFile
+          file: server/GatewayService/Dockerfile
           push: true
           tags: 7devio/shift-swap-gateway-service:latest

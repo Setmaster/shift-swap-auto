@@ -27,6 +27,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: server/SearchService/DockerFile
+          file: server/SearchService/Dockerfile
           push: true
           tags: 7devio/shift-swap-search-service:latest

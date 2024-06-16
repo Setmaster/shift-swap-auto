@@ -1,5 +1,5 @@
 ﻿'use server';
 
-export async function getAPIUrl() {
-    return process.env.API_URL;
+export async function getAPPUrl() {
+    return process.env.APP_URL;
 }

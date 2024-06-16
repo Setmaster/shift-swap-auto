@@ -7,7 +7,7 @@ import Link from "next/link";
 import CountdownTimer from "@/components/SaleCard/CountdownTimer";
 import SaleImage from "@/components/SaleCard/SaleImage";
 import {formatCurrency} from "@/lib/utils/generalUtils";
-import {getAPIUrl} from "@/lib/actions/userActions";
+import {getAPPUrl} from "@/lib/actions/userActions";
 
 type SaleCardProps = {
     data: Auction;
@@ -34,8 +34,8 @@ export default function SaleCard({data}: SaleCardProps) {
         event.stopPropagation(); // Prevent the Card link from being triggered
         event.preventDefault(); // Stop the default behavior
         
-        const baseUrl = await getAPIUrl();
-        const shareLink = `${baseUrl}auctions/details/${data.id}`;
+        const baseUrl = await getAPPUrl();
+        const shareLink = `${baseUrl}/auctions/details/${data.id}`;
 
         if (navigator.share) {
             try {

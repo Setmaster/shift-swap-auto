@@ -27,6 +27,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: server/BiddingService/DockerFile
+          file: server/BiddingService/Dockerfile
           push: true
           tags: 7devio/shift-swap-bidding-service:latest
