@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    images:{
+    images: {
         domains: [
             'cdn.pixabay.com',
             'shift-swap-imgs.s3.us-east-1.amazonaws.com',
@@ -11,6 +11,14 @@ const nextConfig = {
         ignoreBuildErrors: true, // needed because of issues on nextAuths and reactflow end 
     },
     reactStrictMode: false,
+    async rewrites() {
+        return [
+            {
+                source: '/api/notifications/:path*',
+                destination: 'http://shift-swap-notifications-service:80/:path*',
+            },
+        ];
+    },
 };
 
 export default nextConfig;
