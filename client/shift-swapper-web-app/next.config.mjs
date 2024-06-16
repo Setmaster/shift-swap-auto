@@ -14,4 +14,5 @@ const nextConfig = {
     productionBrowserSourceMaps: process.env.NEXT_PRODUCTION_BROWSER_SOURCEMAPS === 'true',
 };
 
+console.log(process.env.NEXT_PRODUCTION_BROWSER_SOURCEMAPS)
 export default nextConfig;
