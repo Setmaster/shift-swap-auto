@@ -1,0 +1,43 @@
+name: Sync Codex Connector Repos
+
+on:
+  schedule:
+    - cron: '15 3 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Show changes only
+        required: false
+        default: 'false'
+      include_orgs:
+        description: Also include org repos where I have admin
+        required: false
+        default: 'false'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y jq
+      - name: Authenticate GitHub CLI
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          if [ -z "${GH_TOKEN}" ]; then
+            echo "GH_PAT secret is required" >&2
+            exit 1
+          fi
+          echo "${GH_TOKEN}" | gh auth login --with-token
+          gh auth status
+      - name: Sync repositories with Codex Connector
+        env:
+          APP_NAME: ${{ secrets.APP_NAME }}
+          DRY_RUN: ${{ github.event.inputs.dry_run == 'true' && '1' || '0' }}
+          INCLUDE_ORGS: ${{ github.event.inputs.include_orgs == 'true' && '1' || '0' }}
+        run: |
+          APP_NAME="${{ secrets.APP_NAME || 'ChatGPT Codex Connector' }}"
+          DRY_FLAG=$([[ "${{ github.event.inputs.dry_run }}" == 'true' ]] && echo 1 || echo 0)
+          ORG_FLAG=$([[ "${{ github.event.inputs.include_orgs }}" == 'true' ]] && echo 1 || echo 0)
+          bash scripts/add-repos-to-codex.sh
